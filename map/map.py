@@ -1,4 +1,4 @@
-from data.map.territory import LandTerritory, SeaTerritory
+from map.territory import LandTerritory, SeaTerritory
 
 class Map:
     """ String -> Territory """

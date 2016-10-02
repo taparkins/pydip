@@ -1,7 +1,7 @@
-import pytest
-
-from data.map.map import Map
 from data.map.territory import SeaTerritory, LandTerritory
+
+from map.map import Map
+
 
 def test_empty_map():
     territory_descriptors = []
