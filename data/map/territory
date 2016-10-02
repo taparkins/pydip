@@ -1,0 +1,31 @@
+
+
+class Territory:
+    """ String """
+    name = None
+
+    def __init__(self, name):
+        self.name = name
+
+class CoastTerritory(Territory):
+    """ LandTerritory """
+    parent = None
+
+    def __init__(self, name, parent):
+        super().__init__(name)
+        assert isinstance(parent, LandTerritory)
+        self.parent = parent
+
+class LandTerritory(Territory):
+    """ CoastTerritory[] """
+    coasts = None
+
+    def __init__(self, name, coast_names):
+        super().__init__(name)
+        self.coasts = []
+        for coast_name in coast_names:
+            self.coasts.append(CoastTerritory(coast_name, self))
+
+class SeaTerritory(Territory):
+    def __init__(self, name):
+        super().__init__(name)
