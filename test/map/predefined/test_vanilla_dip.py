@@ -1,4 +1,4 @@
-from map.predefined.vanilla_dip import generate_map
+from map.predefined.vanilla_dip import generate_map, generate_supply_center_map
 
 def test_territory_adjacency_counts():
     map = generate_map()
@@ -129,3 +129,7 @@ def test_territory_adjacency_counts():
     assert expected_counts.keys() == map.name_map.keys()
     for name, count in expected_counts.items():
         assert len(map.adjacency[name]) == count
+
+def test_supply_center_counts():
+    map = generate_supply_center_map()
+    assert len(map.supply_centers) == 34

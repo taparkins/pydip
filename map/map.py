@@ -60,3 +60,16 @@ class Map:
 
             self.adjacency[name_a].add(name_b)
             self.adjacency[name_b].add(name_a)
+
+class SupplyCenterMap:
+    """ Map """
+    map = None
+
+    """ String{}, subset of map.name_map.keys() """
+    supply_centers = None
+
+    def __init__(self, map, supply_centers):
+        assert supply_centers & map.name_map.keys() == supply_centers
+
+        self.supply_centers = set(supply_centers)
+        self.map = map

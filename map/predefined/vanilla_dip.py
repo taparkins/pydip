@@ -1,9 +1,9 @@
-from map.map import Map
+from map.map import Map, SupplyCenterMap
 
-VANILLA_DIP_MAP_CACHE = None
+_VANILLA_DIP_MAP_CACHE = None
 def generate_map():
-    global VANILLA_DIP_MAP_CACHE
-    if not VANILLA_DIP_MAP_CACHE:
+    global _VANILLA_DIP_MAP_CACHE
+    if not _VANILLA_DIP_MAP_CACHE:
         territory_descriptors = [
             # Sea Territories
             {'name': 'Adriatic Sea'},
@@ -344,5 +344,48 @@ def generate_map():
             ('Venice', 'Tyrolia'),
         ]
 
-        VANILLA_DIP_MAP_CACHE = Map(territory_descriptors, adjacencies)
-    return VANILLA_DIP_MAP_CACHE
+        _VANILLA_DIP_MAP_CACHE = Map(territory_descriptors, adjacencies)
+    return _VANILLA_DIP_MAP_CACHE
+
+_VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE = None
+def generate_supply_center_map():
+    global _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE
+    if not _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE:
+        supply_centers = {
+            'Edinburgh',
+            'London',
+            'Liverpool',
+            'Norway',
+            'Sweden',
+            'St. Petersburg',
+            'Denmark',
+            'Belgium',
+            'Holland',
+            'Kiel',
+            'Berlin',
+            'Munich',
+            'Brest',
+            'Paris',
+            'Marseilles',
+            'Portugal',
+            'Spain',
+            'Tunis',
+            'Naples',
+            'Rome',
+            'Venice',
+            'Trieste',
+            'Vienna',
+            'Budapest',
+            'Serbia',
+            'Greece',
+            'Bulgaria',
+            'Rumania',
+            'Constantinople',
+            'Ankara',
+            'Smyrna',
+            'Sevastopol',
+            'Moscow',
+            'Warsaw',
+        }
+        _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE = SupplyCenterMap(generate_map(), supply_centers)
+    return _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE
