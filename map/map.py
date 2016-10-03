@@ -69,7 +69,7 @@ class SupplyCenterMap:
     supply_centers = None
 
     def __init__(self, map, supply_centers):
-        assert supply_centers & map.name_map.keys() == supply_centers
+        assert supply_centers < map.name_map.keys()
 
         self.supply_centers = set(supply_centers)
         self.map = map
