@@ -1,5 +1,6 @@
-from player.unit import Unit, UnitTypes
-from map.territory import SeaTerritory, CoastTerritory, LandTerritory
+from player.unit import Unit
+from player.helpers import unit_type_can_enter
+from map.territory import CoastTerritory
 
 class Player:
     """ String -- name identifier for player """
@@ -42,12 +43,7 @@ class Player:
 
             if unit_type is None:
                 continue
-            elif unit_type == UnitTypes.FLEET:
-                assert isinstance(territory, CoastTerritory) or isinstance(territory, SeaTerritory)
-            elif unit_type == UnitTypes.TROOP:
-                assert isinstance(territory, LandTerritory)
-            else:
-                raise ValueError("Invalid UnitType: {}".format(unit_type))
+            assert unit_type_can_enter(self.map, unit_type, territory)
 
             self.units.append(Unit(unit_type, name))
 

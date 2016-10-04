@@ -1,5 +1,7 @@
 from enum import Enum
 
+from map.territory import CoastTerritory, LandTerritory, SeaTerritory
+
 class UnitTypes(Enum):
     TROOP = 0
     FLEET = 1
