@@ -1,4 +1,4 @@
-from data.map.territory import SeaTerritory, LandTerritory
+from map.territory import SeaTerritory, LandTerritory
 
 from map.map import Map
 
