@@ -1,7 +1,7 @@
 import pytest
 
 from map.predefined.vanilla_dip import generate_map
-from player.command.command import MoveCommand
+from player.command.command import HoldCommand, MoveCommand
 from player.player import Player
 from player.unit import UnitTypes
 
@@ -72,3 +72,15 @@ def test_move_coast_to_coast():
 
     assert command.unit.position == 'Spain North Coast'
     assert command.destination == 'Portugal Coast'
+
+def test_hold():
+    map = generate_map()
+    starting_configuration = [
+        {'territory_name': 'Trieste', 'unit_type': UnitTypes.TROOP},
+    ]
+    player = Player("Austria", map, starting_configuration)
+
+    command = HoldCommand(player, player.units[0])
+
+    assert command.unit.position == 'Trieste'
+    assert command.destination == 'Trieste'
