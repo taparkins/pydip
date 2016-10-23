@@ -18,6 +18,14 @@ class Command:
         self.player = player
         self.unit = unit
 
+    def __eq__(self, other):
+        return ((isinstance(other, Command)) and
+                (self.player.name == other.player.name) and
+                (self.unit == other.unit))
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
 class MoveCommand(Command):
     """
     String -- Name of territory being moved to.
@@ -35,6 +43,14 @@ class MoveCommand(Command):
             unit.position == destination
         )
         self.destination = destination
+
+    def __eq__(self, other):
+        return (super(MoveCommand, self).__eq__(other) and
+                isinstance(other, MoveCommand) and
+                self.destination == other.destination)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 """ Holding is really just moving to your current position """
 class HoldCommand(MoveCommand):
@@ -69,6 +85,15 @@ class SupportCommand(Command):
         )
         assert unit_can_support(map, unit, destination_territory)
 
+    def __eq__(self, other):
+        return (super(SupportCommand, self).__eq__(other) and
+                isinstance(other, SupportCommand) and
+                self.supported_unit == other.supported_unit and
+                self.destination == other.desination)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
 class ConvoyMoveCommand(Command):
     """
     String -- name of territory convoying to.
@@ -94,6 +119,14 @@ class ConvoyMoveCommand(Command):
         assert destination in map.name_map
         destination_territory = map.name_map[destination]
         assert territory_is_convoy_compatible(destination_territory)
+
+    def __eq__(self, other):
+        return (super(ConvoyMoveCommand, self).__eq__(other) and
+                isinstance(other, ConvoyMoveCommand) and
+                self.destination == other.desination)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 class ConvoyTransportCommand(Command):
     """
@@ -128,3 +161,12 @@ class ConvoyTransportCommand(Command):
         assert destination in map.name_map
         destination_territory = map.name_map[destination]
         assert territory_is_convoy_compatible(destination_territory)
+
+    def __eq__(self, other):
+        return (super(ConvoyTransportCommand, self).__eq__(other) and
+                isinstance(other, ConvoyTransportCommand) and
+                self.transported_unit == other.transported_unit and
+                self.destination == other.desination)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
