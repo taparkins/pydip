@@ -105,6 +105,7 @@ class ConvoyMoveCommand(Command):
     Extra Assertions:
       * unit must be a TROOP
       * unit's current territory must be LandTerritory with at least one coast
+      * convoys with destinations equal to the source are illegal
     """
 
     def __init__(self, player, unit, destination):
@@ -112,12 +113,14 @@ class ConvoyMoveCommand(Command):
         self.destination = destination
         map = self.player.map
 
-        current_territory = map.name_map[unit.position]
+        current_territory     = map.name_map[unit.position]
+        destination_territory = map.name_map[destination]
+        assert current_territory != destination_territory
+
         assert unit.unit_type == UnitTypes.TROOP
         assert territory_is_convoy_compatible(current_territory)
 
         assert destination in map.name_map
-        destination_territory = map.name_map[destination]
         assert territory_is_convoy_compatible(destination_territory)
 
     def __eq__(self, other):
@@ -145,6 +148,7 @@ class ConvoyTransportCommand(Command):
     Extra Assertions:
       * unit must be a FLEET
       * unit's current territory must be LandTerritory with at least one coast
+      * convoys with destinations equal to the source are illegal
     """
 
     def __init__(self, player, unit, transported_unit, destination):
@@ -154,12 +158,14 @@ class ConvoyTransportCommand(Command):
         assert unit.unit_type == UnitTypes.FLEET
         map = self.player.map
 
-        assert transported_unit.unit_type == UnitTypes.TROOP
         current_territory = map.name_map[transported_unit.position]
+        destination_territory = map.name_map[destination]
+        assert current_territory != destination_territory
+
+        assert transported_unit.unit_type == UnitTypes.TROOP
         assert territory_is_convoy_compatible(current_territory)
 
         assert destination in map.name_map
-        destination_territory = map.name_map[destination]
         assert territory_is_convoy_compatible(destination_territory)
 
     def __eq__(self, other):

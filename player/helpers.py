@@ -13,7 +13,7 @@ def unit_type_can_enter(map, unit_type, territory):
     elif unit_type == UnitTypes.FLEET:
         return isinstance(territory, SeaTerritory) or isinstance(territory, CoastTerritory)
     else:
-        raise ValueError("Invalid UnitType: {}".format(unit.unit_type))
+        raise ValueError("Invalid UnitType: {}".format(unit_type))
 
 def unit_can_support(map, unit, territory):
     """
