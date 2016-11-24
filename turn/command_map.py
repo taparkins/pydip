@@ -72,4 +72,4 @@ class CommandMap:
 
     def get_home_command(self, territory_name):
         territory_name = self._relevant_name_for_territory(territory_name)
-        return self._home_map[territory_name]
+        return self._home_map.get(territory_name, None)
