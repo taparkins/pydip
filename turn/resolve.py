@@ -1,7 +1,12 @@
 from collections import defaultdict
 from enum import Enum
 
+from player.command.command import MoveCommand, ConvoyMoveCommand, ConvoyTransportCommand, SupportCommand
+from turn.adjudicate.convoy import adjudicate_convoy_move, adjudicate_convoy_transport
+from turn.adjudicate.move import adjudicate_move
+from turn.adjudicate.support import adjudicate_support
 from turn.command_map import CommandMap
+from turn.retreat import compute_retreats
 
 """
 Returns resulting positions of each unit by considering interactions
@@ -13,6 +18,8 @@ HoldCommand for that unit by default.
 
 map: Map representing game board
 commands: Command[] representing each command issued for this turn
+          Expected to be fully populated for each unit on the board
+          (Recommended to default to Hold for units not given orders)
 
 returns a map of Player names to sub-maps representing results of that
 player's units. The sub-maps will be maps of Units to an optional set
@@ -23,9 +30,9 @@ retreat is possible.
 """
 def resolve_turn(map, commands):
     command_map = CommandMap(map, commands)
-    resolutions = { _resolve(map, command_map, command) for command in commands }
-    # TODO: use resolutions to determine retreat assignments
-    pass
+    _init_resolution()
+    resolutions = { command.unit.position: _resolve(map, command_map, command) for command in commands }
+    return compute_retreats(map, command_map, commands, resolutions)
 
 # Below implementation is taken with minor modification from Lucas Kruijswijk:
 # http://www.diplom.org/Zine/S2009M/Kruijswijk/DipMath_Chp6.htm
@@ -34,9 +41,17 @@ class ResolutionState(Enum):
     GUESSING   = 1
     RESOLVED   = 2
 
-resolution_map  = defaultdict(bool)
-state_map       = defaultdict(lambda: ResolutionState.UNRESOLVED)
-dependency_list = list()
+resolution_map  = None
+state_map       = None
+dependency_list = None
+def _init_resolution():
+    global resolution_map
+    global state_map
+    global dependency_list
+    resolution_map = defaultdict(bool)
+    state_map      = defaultdict(lambda: ResolutionState.UNRESOLVED)
+    dependency_list = list()
+
 def _resolve(map, command_map, command):
     global resolution_map
     global state_map
@@ -103,7 +118,17 @@ def _resolve(map, command_map, command):
     return _resolve(map, command_map, command)
 
 def _adjudicate(map, command_map, command):
-    pass
+    if isinstance(command, MoveCommand):
+        return adjudicate_move(map, command_map, command)
+    elif isinstance(command, ConvoyMoveCommand):
+        return adjudicate_convoy_move(map, command_map, command)
+    elif isinstance(command, ConvoyTransportCommand):
+        return adjudicate_convoy_transport(map, command_map, command)
+    elif isinstance(command, SupportCommand):
+        return adjudicate_support(map, command_map, command)
+    else:
+        raise ValueError("Command unexpected type")
 
 def _backup_rule(map, command_map, dependency_set):
+    # TODO: Szykman Rule
     pass
