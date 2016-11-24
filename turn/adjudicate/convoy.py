@@ -1,15 +1,19 @@
 from map.territory import SeaTerritory, CoastTerritory
 from player.command.command import ConvoyMoveCommand, ConvoyTransportCommand
+from turn.adjudicate.move import adjudicate_move
+from turn.adjudicate.unit import is_dislodged
 from turn.resolve import _resolve
 
 
 def adjudicate_convoy_move(map, command_map, command):
     assert isinstance(command, ConvoyMoveCommand)
-    pass
+    if not has_path(map, command_map, command):
+        return False
+    return adjudicate_move(map, command_map, command)
 
 def adjudicate_convoy_transport(map, command_map, command):
     assert isinstance(command, ConvoyTransportCommand)
-    pass
+    return not is_dislodged(map, command_map, command.unit)
 
 def has_path(map, command_map, command):
     assert isinstance(command, ConvoyMoveCommand)
