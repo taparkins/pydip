@@ -82,3 +82,17 @@ def test_support_fleet_to_coast_with_troop():
     assert command.unit.position == 'Finland'
     assert command.supported_unit.position == 'Baltic Sea'
     assert command.destination == 'Sweden Coast'
+
+def test_support_troop_on_coast_to_another_coast():
+    map = generate_map()
+    starting_configuration = [
+        {'territory_name': 'Norway', 'unit_type': UnitTypes.TROOP},
+        {'territory_name': 'Norwegian Sea', 'unit_type': UnitTypes.FLEET},
+    ]
+    player = Player("Russia", map, starting_configuration)
+
+    command = SupportCommand(player, player.units[1], player.units[0], 'Edinburgh')
+
+    assert command.unit.position == 'Norwegian Sea'
+    assert command.supported_unit.position == 'Norway'
+    assert command.destination == 'Edinburgh'

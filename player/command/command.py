@@ -78,10 +78,14 @@ class SupportCommand(Command):
 
         assert destination in map.name_map
         destination_territory = map.name_map[destination]
+        supported_territory   = map.name_map[supported_unit.position]
 
         assert (
             destination == supported_unit.position or
-            unit_can_enter(map, supported_unit, destination_territory)
+            unit_can_enter(map, supported_unit, destination_territory) or
+            (supported_unit.unit_type == UnitTypes.TROOP and
+             territory_is_convoy_compatible(destination_territory) and
+             territory_is_convoy_compatible(supported_territory))
         )
         assert unit_can_support(map, unit, destination_territory)
 
