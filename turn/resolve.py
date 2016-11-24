@@ -1,10 +1,8 @@
 from collections import defaultdict
 from enum import Enum
 
+from map.territory import CoastTerritory, SeaTerritory
 from player.command.command import MoveCommand, ConvoyMoveCommand, ConvoyTransportCommand, SupportCommand
-from turn.adjudicate.convoy import adjudicate_convoy_move, adjudicate_convoy_transport
-from turn.adjudicate.move import adjudicate_move
-from turn.adjudicate.support import adjudicate_support
 from turn.command_map import CommandMap
 from turn.retreat import compute_retreats
 
@@ -119,16 +117,197 @@ def _resolve(map, command_map, command):
 
 def _adjudicate(map, command_map, command):
     if isinstance(command, MoveCommand):
-        return adjudicate_move(map, command_map, command)
+        return _adjudicate_move(map, command_map, command)
     elif isinstance(command, ConvoyMoveCommand):
-        return adjudicate_convoy_move(map, command_map, command)
+        return _adjudicate_convoy_move(map, command_map, command)
     elif isinstance(command, ConvoyTransportCommand):
-        return adjudicate_convoy_transport(map, command_map, command)
+        return _adjudicate_convoy_transport(map, command_map, command)
     elif isinstance(command, SupportCommand):
-        return adjudicate_support(map, command_map, command)
+        return _adjudicate_support(map, command_map, command)
     else:
         raise ValueError("Command unexpected type")
 
 def _backup_rule(map, command_map, dependency_set):
     # TODO: Szykman Rule
     pass
+
+#----------------------
+# convoys
+#----------------------
+def _adjudicate_convoy_move(map, command_map, command):
+    assert isinstance(command, ConvoyMoveCommand)
+    if not _has_path(map, command_map, command):
+        return False
+    return _adjudicate_move(map, command_map, command)
+
+def _adjudicate_convoy_transport(map, command_map, command):
+    assert isinstance(command, ConvoyTransportCommand)
+    return not _is_dislodged(map, command_map, command.unit)
+
+def _has_path(map, command_map, command):
+    assert isinstance(command, ConvoyMoveCommand)
+    visited     = set()
+    source      = command.unit.position
+    destination = command.destination
+    possible_transports = command_map.get_transport_commands[(source, destination)]
+    possible_transport_territories = { transport.unit.position for transport in possible_transports }
+
+    starting_territory = map.name_map[source]
+    coastal_adjacencies = [map.adjacency[coast.name] for coast in starting_territory.coasts]
+    coastal_adjacencies = filter(lambda t: isinstance(t, SeaTerritory), coastal_adjacencies)
+    to_visit = [
+        possible_transport_territory
+        for possible_transport_territory in possible_transport_territories
+        if any(possible_transport_territory in coastal_adjacency for coastal_adjacency in coastal_adjacencies)
+    ]
+
+    while len(to_visit) > 0:
+        visiting = to_visit.pop()
+        visited.add(visiting)
+        # if the convoy was disrupted, we can't use it as part of our chain
+        if not _resolve(map, command_map, command_map.get_home_command(visiting)):
+            continue
+
+        adjacent = [map.name_map[adj] for adj in map.adjacency[visiting]]
+
+        adjacent_land = {
+            coast.parent.name for coast in adjacent
+            if isinstance(coast, CoastTerritory)
+        }
+        if destination in adjacent_land:
+            return True
+
+        to_visit = [
+           territory.name for territory in adjacent
+           if (territory.name not in visited and
+               territory.name in possible_transport_territories)
+        ] + to_visit
+
+    return False
+
+#----------------------
+# move
+#----------------------
+def _adjudicate_move(map, command_map, command):
+    assert isinstance(command, MoveCommand) or isinstance(command, ConvoyMoveCommand)
+
+    attack_strength = _attack_strength(map, command_map, command)
+
+    prevent_combatants     = _get_prevent_combatants(command_map, command)
+    high_prevent_strength = max([_prevent_strength(map, command_map, prevent_combatant)
+                                 for prevent_combatant in prevent_combatants])
+    if attack_strength <= high_prevent_strength:
+        return False
+
+    head_to_head_combatant = _get_head_to_head_combatant(command_map, command)
+    if head_to_head_combatant is not None:
+        return attack_strength > _defend_strength(map, command_map, head_to_head_combatant)
+    return attack_strength > _hold_strength(map, command_map, command.destination)
+
+def _get_prevent_combatants(command_map, command):
+    direct_combatants = command_map.get_attackers(command.destination)
+    convoy_combatants = command_map.get_convoy_attackers(command.destination)
+    combatants = direct_combatants + convoy_combatants
+    combatants = filter(lambda c: c != command, combatants)
+    return combatants
+
+def _get_head_to_head_combatant(command_map, command):
+    potential_attacker = command_map.get_home_command(command.destination)
+    if potential_attacker is not None:
+        if isinstance(potential_attacker, MoveCommand) or isinstance(potential_attacker, ConvoyMoveCommand):
+            if potential_attacker.destination == command.unit.position:
+                return potential_attacker
+    return None
+
+def _attack_strength(map, command_map, command):
+    if isinstance(command, ConvoyMoveCommand):
+        if not _has_path(map, command_map, command):
+            return 0
+    attacked_command = command_map.get_home_command(command.destination)
+    supporters = command_map.get_supports(command.unit.position, command.destination)
+    supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
+
+    if attacked_command is not None:
+        if attacked_command.player.name == command.player.name:
+            return 0
+        if isinstance(attacked_command, MoveCommand) or isinstance(attacked_command, ConvoyMoveCommand):
+            if not _resolve(map, command_map, attacked_command):
+                supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)
+        else:
+            supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)
+
+    return 1 + len(list(supporters))
+
+def _prevent_strength(map, command_map, command):
+    if isinstance(command, ConvoyMoveCommand):
+        if not _has_path(map, command_map, command):
+            return 0
+    head_to_head_combatant = _get_head_to_head_combatant(command_map, command)
+    if head_to_head_combatant is not None:
+        if _resolve(map, command_map, head_to_head_combatant):
+            return 0
+
+    supporters = command_map.get_supports(command.unit.position, command.destination)
+    supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
+    return 1 + len(list(supporters))
+
+def _defend_strength(map, command_map, command):
+    supporters = command_map.get_supports(command.unit.position, command.destination)
+    supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
+    return 1 + len(list(supporters))
+
+def _hold_strength(map, command_map, territory):
+    home_command = command_map.get_home_command(territory)
+    if home_command is None:
+        return 0
+    if isinstance(home_command, MoveCommand) or isinstance(home_command, ConvoyMoveCommand):
+        return 0 if _resolve(map, command_map, home_command) else 1
+    supporters = command_map.get_supports(territory, territory)
+    supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
+    return 1 + len(list(supporters))
+
+#----------------------
+# support
+#----------------------
+def _adjudicate_support(map, command_map, command):
+    assert isinstance(command, SupportCommand)
+    if _invalid_support(command_map, command):
+        return False
+    if len(_indirect_non_convoy_attackers(command_map, command)) > 0:
+        return False
+    for convoy_attacker in _indirect_convoy_attackers(command_map, command.unit.position):
+        if _has_path(map, command_map, convoy_attacker):
+            return False
+    return _is_dislodged(map, command_map, command.unit)
+
+def _invalid_support(command_map, command):
+    supported_command = command_map.get_home_command(command.supported_unit.position)
+    if isinstance(supported_command, MoveCommand) or isinstance(supported_command, ConvoyMoveCommand):
+        return supported_command.destination != command.destination
+    return command.destination != command.supported_unit.position
+
+def _indirect_non_convoy_attackers(command_map, command):
+    filtered = command_map.get_attackers(command.unit.position)
+    filtered = filter(lambda c: c.unit.position != command.destination, filtered)
+    filtered = filter(lambda c: c.player != command.player, filtered)
+    return list(filtered)
+
+def _indirect_convoy_attackers(command_map, command):
+    filtered = command_map.get_convoy_attackers(command.unit.position)
+    filtered = filter(lambda c: c.unit.position != command.destination, filtered)
+    filtered = filter(lambda c: c.player.name != command.player.name, filtered)
+    return list(filtered)
+
+"""
+Determines if the unit will be dislodged by a different move, assuming it stays in place.
+Please note that this function does not indicate whether the unit _will_ stay in place.
+"""
+def _is_dislodged(map, command_map, unit):
+    return any((_resolve(map, command_map, attack) for attack in _attackers(command_map, unit)))
+
+def _attackers(command_map, unit):
+    filtered = command_map.values()
+    filtered = filter(lambda c: isinstance(c, MoveCommand) or isinstance(c, ConvoyMoveCommand), filtered)
+    filtered = filter(lambda c: c.destination == unit.position, filtered)
+
+    return list(filtered)
