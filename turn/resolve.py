@@ -195,7 +195,7 @@ def _adjudicate_move(map, command_map, command):
 
     prevent_combatants     = _get_prevent_combatants(command_map, command)
     high_prevent_strength = max([_prevent_strength(map, command_map, prevent_combatant)
-                                 for prevent_combatant in prevent_combatants])
+                                 for prevent_combatant in prevent_combatants] + [0])
     if attack_strength <= high_prevent_strength:
         return False
 
@@ -275,10 +275,10 @@ def _adjudicate_support(map, command_map, command):
         return False
     if len(_indirect_non_convoy_attackers(command_map, command)) > 0:
         return False
-    for convoy_attacker in _indirect_convoy_attackers(command_map, command.unit.position):
+    for convoy_attacker in _indirect_convoy_attackers(command_map, command):
         if _has_path(map, command_map, convoy_attacker):
             return False
-    return _is_dislodged(map, command_map, command.unit)
+    return not _is_dislodged(map, command_map, command.unit)
 
 def _invalid_support(command_map, command):
     supported_command = command_map.get_home_command(command.supported_unit.position)
@@ -306,7 +306,7 @@ def _is_dislodged(map, command_map, unit):
     return any((_resolve(map, command_map, attack) for attack in _attackers(command_map, unit)))
 
 def _attackers(command_map, unit):
-    filtered = command_map.values()
+    filtered = command_map.get_attackers(unit.position)
     filtered = filter(lambda c: isinstance(c, MoveCommand) or isinstance(c, ConvoyMoveCommand), filtered)
     filtered = filter(lambda c: c.destination == unit.position, filtered)
 

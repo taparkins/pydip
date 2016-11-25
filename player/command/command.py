@@ -52,10 +52,25 @@ class MoveCommand(Command):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __repr__(self):
+        return '{}: {} {} -> {}'.format(
+            self.player.name,
+            self.unit.unit_type,
+            self.unit.position,
+            self.destination,
+        )
+
 """ Holding is really just moving to your current position """
 class HoldCommand(MoveCommand):
     def __init__(self, player, unit):
         super().__init__(player, unit, unit.position)
+
+    def __repr__(self):
+        return '{}: {} {} Hold'.format(
+            self.player.name,
+            self.unit.unit_type,
+            self.unit.position,
+        )
 
 class SupportCommand(Command):
     """ Unit -- unit to support """
@@ -98,6 +113,16 @@ class SupportCommand(Command):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __repr__(self):
+        return '{}: {} {} Supports {} {} -> {}'.format(
+            self.player.name,
+            self.unit.unit_type,
+            self.unit.position,
+            self.supported_unit.unit_type,
+            self.supported_unit.position,
+            self.destination,
+        )
+
 class ConvoyMoveCommand(Command):
     """
     String -- name of territory convoying to.
@@ -134,6 +159,14 @@ class ConvoyMoveCommand(Command):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __repr__(self):
+        return '{}: {} {} -> {} (Convoy)'.format(
+            self.player.name,
+            self.unit.unit_type,
+            self.unit.position,
+            self.destination,
+        )
 
 class ConvoyTransportCommand(Command):
     """
@@ -180,3 +213,13 @@ class ConvoyTransportCommand(Command):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+    def __repr__(self):
+        return '{}: {} {} Transport {} {} -> {} (Convoy)'.format(
+            self.player.name,
+            self.unit.unit_type,
+            self.unit.position,
+            self.transported_unit.unit_type,
+            self.transported_unit.position,
+            self.destination,
+        )

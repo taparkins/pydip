@@ -25,6 +25,7 @@ def unit_can_support(map, unit, territory):
         territories_to_check.extend(territory.coasts)
     elif isinstance(territory, CoastTerritory):
         territories_to_check.append(territory.parent)
+        territories_to_check.extend(territory.parent.coasts)
 
     return any(unit_can_enter(map, unit, to_check) for to_check in territories_to_check)
 

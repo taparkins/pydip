@@ -24,10 +24,10 @@ def compute_retreats(map, command_map, commands, resolutions):
             else:
                 retreat_options = map.adjacency[current_position]
                 retreat_options = filter(lambda t: t not in occupied_territories, retreat_options)
-                retreat_options = filter(lambda t: t in {attacker.position for attacker in attackers}, retreat_options)
-                retreat_options = filter(lambda t: _attacked_by_other_unit(command_map, command, t), retreat_options)
+                retreat_options = filter(lambda t: t not in {attacker.unit.position for attacker in attackers}, retreat_options)
+                retreat_options = filter(lambda t: not _attacked_by_other_unit(command_map, command, t), retreat_options)
 
-                player_results[command.player.name][command.unit] = list(retreat_options)
+                player_results[command.player.name][command.unit] = set(retreat_options)
 
     return player_results
 
@@ -45,6 +45,6 @@ def _get_occupations(command_map, commands, resolutions):
     return occupations
 
 def _attacked_by_other_unit(command_map, command, territory):
-    attackers = command_map.get_attackers(territory) + command_map.get_convoy_attackers()
+    attackers = command_map.get_attackers(territory) + command_map.get_convoy_attackers(territory)
     attackers = filter(lambda c: c != command, attackers)
     return len(list(attackers)) > 0

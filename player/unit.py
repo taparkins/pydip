@@ -23,3 +23,6 @@ class Unit:
 
     def __hash__(self):
         return hash((self.unit_type, self.position))
+
+    def __repr__(self):
+        return '[{} -- {}]'.format(self.unit_type, self.position)
