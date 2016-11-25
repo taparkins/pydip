@@ -1,5 +1,6 @@
 from collections import defaultdict
 from enum import Enum
+from functools import reduce
 
 from map.territory import CoastTerritory, SeaTerritory
 from player.command.command import MoveCommand, ConvoyMoveCommand, ConvoyTransportCommand, SupportCommand
@@ -149,12 +150,12 @@ def _has_path(map, command_map, command):
     visited     = set()
     source      = command.unit.position
     destination = command.destination
-    possible_transports = command_map.get_transport_commands[(source, destination)]
+    possible_transports = command_map.get_convoy_transports(source, destination)
     possible_transport_territories = { transport.unit.position for transport in possible_transports }
 
     starting_territory = map.name_map[source]
-    coastal_adjacencies = [map.adjacency[coast.name] for coast in starting_territory.coasts]
-    coastal_adjacencies = filter(lambda t: isinstance(t, SeaTerritory), coastal_adjacencies)
+    coastal_adjacencies = reduce(set.__or__, [map.adjacency[coast.name] for coast in starting_territory.coasts])
+    coastal_adjacencies = list(filter(lambda t: isinstance(map.name_map[t], SeaTerritory), coastal_adjacencies))
     to_visit = [
         possible_transport_territory
         for possible_transport_territory in possible_transport_territories
@@ -212,9 +213,11 @@ def _get_prevent_combatants(command_map, command):
     return combatants
 
 def _get_head_to_head_combatant(command_map, command):
+    if isinstance(command, ConvoyMoveCommand):
+        return None
     potential_attacker = command_map.get_home_command(command.destination)
     if potential_attacker is not None:
-        if isinstance(potential_attacker, MoveCommand) or isinstance(potential_attacker, ConvoyMoveCommand):
+        if isinstance(potential_attacker, MoveCommand):
             if potential_attacker.destination == command.unit.position:
                 return potential_attacker
     return None
@@ -228,10 +231,12 @@ def _attack_strength(map, command_map, command):
     supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
 
     if attacked_command is not None:
-        if attacked_command.player.name == command.player.name:
-            return 0
         if isinstance(attacked_command, MoveCommand) or isinstance(attacked_command, ConvoyMoveCommand):
             if not _resolve(map, command_map, attacked_command):
+                if attacked_command.player.name == command.player.name:
+                    return 0
+                supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)
+            elif attacked_command.destination == command.unit.position:
                 supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)
         else:
             supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)

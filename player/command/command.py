@@ -155,7 +155,7 @@ class ConvoyMoveCommand(Command):
     def __eq__(self, other):
         return (super(ConvoyMoveCommand, self).__eq__(other) and
                 isinstance(other, ConvoyMoveCommand) and
-                self.destination == other.desination)
+                self.destination == other.destination)
 
     def __ne__(self, other):
         return not self.__eq__(other)
