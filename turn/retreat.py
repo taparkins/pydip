@@ -1,12 +1,13 @@
 from collections import defaultdict
 
+from map.territory import LandTerritory, CoastTerritory
 from player.command.command import ConvoyMoveCommand, MoveCommand
 from player.unit import Unit
 
 
 def compute_retreats(map, command_map, commands, resolutions):
     player_results = defaultdict(dict)
-    occupied_territories = _get_occupations(command_map, commands, resolutions)
+    occupied_territories = _get_occupations(map, command_map, commands, resolutions)
 
     for command in commands:
         current_position = command.unit.position
@@ -24,23 +25,34 @@ def compute_retreats(map, command_map, commands, resolutions):
             else:
                 retreat_options = map.adjacency[current_position]
                 retreat_options = filter(lambda t: t not in occupied_territories, retreat_options)
-                retreat_options = filter(lambda t: t not in {attacker.unit.position for attacker in attackers}, retreat_options)
+                retreat_options = filter(lambda t: all(t not in _applicable_territories(map, attacker.unit.position) for attacker in attackers), retreat_options)
                 retreat_options = filter(lambda t: not _attacked_by_other_unit(command_map, command, t), retreat_options)
 
                 player_results[command.player.name][command.unit] = set(retreat_options)
 
     return player_results
 
-def _get_occupations(command_map, commands, resolutions):
+def _applicable_territories(map, territory_name):
+    territory = map.name_map[territory_name]
+    applicable = { territory_name }
+    if isinstance(territory, LandTerritory):
+        applicable |= { coast.name for coast in territory.coasts }
+    elif isinstance(territory, CoastTerritory):
+        applicable.add(territory.parent.name)
+        applicable |= { coast.name for coast in territory.parent.coasts }
+
+    return applicable
+
+def _get_occupations(map, command_map, commands, resolutions):
     occupations = set()
     for command in commands:
         if isinstance(command, MoveCommand) or isinstance(command, ConvoyMoveCommand):
             if resolutions[command.unit.position]:
-                occupations.add(command.destination)
+                occupations |= _applicable_territories(map, command.destination)
             else:
-                occupations.add(command.unit.position)
+                occupations |= _applicable_territories(map, command.unit.position)
         else:
-            occupations.add(command.unit.position)
+            occupations |= _applicable_territories(map, command.unit.position)
 
     return occupations
 
