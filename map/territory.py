@@ -7,6 +7,9 @@ class Territory:
     def __init__(self, name):
         self.name = name
 
+    def same_territory(self, other):
+        return self.name == other.name
+
 class CoastTerritory(Territory):
     """ LandTerritory """
     parent = None
@@ -15,6 +18,13 @@ class CoastTerritory(Territory):
         super().__init__(name)
         assert isinstance(parent, LandTerritory)
         self.parent = parent
+
+    def same_territory(self, other):
+        relevant_territories = (
+            { self.parent.name } |
+            { coast.name for coast in self.parent.coasts }
+        )
+        return other.name in relevant_territories
 
     def __eq__(self, other):
         if not isinstance(other, CoastTerritory):
@@ -45,6 +55,13 @@ class LandTerritory(Territory):
         self.coasts = []
         for coast_name in coast_names:
             self.coasts.append(CoastTerritory(coast_name, self))
+
+    def same_territory(self, other):
+        relevant_territories = (
+            { self.name } |
+            { coast.name for coast in self.coasts }
+        )
+        return other.name in relevant_territories
 
     def __eq__(self, other):
         if not isinstance(other, LandTerritory):

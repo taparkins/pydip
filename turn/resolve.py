@@ -200,7 +200,7 @@ def _adjudicate_move(map, command_map, command):
     if attack_strength <= high_prevent_strength:
         return False
 
-    head_to_head_combatant = _get_head_to_head_combatant(command_map, command)
+    head_to_head_combatant = _get_head_to_head_combatant(map, command_map, command)
     if head_to_head_combatant is not None:
         return attack_strength > _defend_strength(map, command_map, head_to_head_combatant)
     return attack_strength > _hold_strength(map, command_map, command.destination)
@@ -212,13 +212,15 @@ def _get_prevent_combatants(command_map, command):
     combatants = filter(lambda c: c != command, combatants)
     return combatants
 
-def _get_head_to_head_combatant(command_map, command):
+def _get_head_to_head_combatant(map, command_map, command):
     if isinstance(command, ConvoyMoveCommand):
         return None
     potential_attacker = command_map.get_home_command(command.destination)
     if potential_attacker is not None:
         if isinstance(potential_attacker, MoveCommand):
-            if potential_attacker.destination == command.unit.position:
+            attacked_territory = map.name_map[potential_attacker.destination]
+            position_territory = map.name_map[command.unit.position]
+            if position_territory.same_territory(attacked_territory):
                 return potential_attacker
     return None
 
@@ -236,7 +238,7 @@ def _attack_strength(map, command_map, command):
                 if attacked_command.player.name == command.player.name:
                     return 0
                 supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)
-            elif attacked_command.destination == command.unit.position:
+            elif _get_head_to_head_combatant(map, command_map, command) is not None:
                 supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)
         else:
             supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)
@@ -247,7 +249,7 @@ def _prevent_strength(map, command_map, command):
     if isinstance(command, ConvoyMoveCommand):
         if not _has_path(map, command_map, command):
             return 0
-    head_to_head_combatant = _get_head_to_head_combatant(command_map, command)
+    head_to_head_combatant = _get_head_to_head_combatant(map, command_map, command)
     if head_to_head_combatant is not None:
         if _resolve(map, command_map, head_to_head_combatant):
             return 0
@@ -308,11 +310,11 @@ Determines if the unit will be dislodged by a different move, assuming it stays 
 Please note that this function does not indicate whether the unit _will_ stay in place.
 """
 def _is_dislodged(map, command_map, unit):
-    return any((_resolve(map, command_map, attack) for attack in _attackers(command_map, unit)))
+    return any((_resolve(map, command_map, attack) for attack in _attackers(map, command_map, unit)))
 
-def _attackers(command_map, unit):
+def _attackers(map, command_map, unit):
     filtered = command_map.get_attackers(unit.position)
     filtered = filter(lambda c: isinstance(c, MoveCommand) or isinstance(c, ConvoyMoveCommand), filtered)
-    filtered = filter(lambda c: c.destination == unit.position, filtered)
+    filtered = filter(lambda c: map.name_map[c.destination].same_territory(map.name_map[unit.position]), filtered)
 
     return list(filtered)
