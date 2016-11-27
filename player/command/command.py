@@ -1,3 +1,4 @@
+from map.territory import SeaTerritory
 from player.helpers import (
     unit_can_enter,
     unit_can_support,
@@ -184,7 +185,8 @@ class ConvoyTransportCommand(Command):
     """
     Extra Assertions:
       * unit must be a FLEET
-      * unit's current territory must be LandTerritory with at least one coast
+      * unit's current territory must be a SeaTerritory
+      * transported unit's current territory must be LandTerritory with at least one coast
       * convoys with destinations equal to the source are illegal
     """
 
@@ -195,12 +197,14 @@ class ConvoyTransportCommand(Command):
         assert unit.unit_type == UnitTypes.FLEET
         map = self.player.map
 
-        current_territory = map.name_map[transported_unit.position]
+        current_territory = map.name_map[unit.position]
+        source_territory = map.name_map[transported_unit.position]
         destination_territory = map.name_map[destination]
-        assert current_territory != destination_territory
+        assert source_territory != destination_territory
+        assert isinstance(current_territory, SeaTerritory)
 
         assert transported_unit.unit_type == UnitTypes.TROOP
-        assert territory_is_convoy_compatible(current_territory)
+        assert territory_is_convoy_compatible(source_territory)
 
         assert destination in map.name_map
         assert territory_is_convoy_compatible(destination_territory)

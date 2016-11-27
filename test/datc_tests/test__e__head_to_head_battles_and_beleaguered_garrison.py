@@ -1,8 +1,3 @@
-import pytest
-
-from map.predefined.vanilla_dip import generate_map
-from player.command.command import SupportCommand
-from player.player import Player
 from player.unit import Unit, UnitTypes
 from test.command_helper import CommandType, CommandHelper
 from test.player_helper import PlayerHelper
