@@ -73,3 +73,23 @@ class SupplyCenterMap:
 
         self.supply_centers = set(supply_centers)
         self.map = map
+
+class OwnershipMap:
+    """ SupplyCenterMap """
+    supply_map = None
+
+    """ String -> String{}, mapping Player names to which territories they control """
+    owned_territories = None
+
+    """ String -> String{}, mapping Player names to which territories are their home territories """
+    home_territories = None
+
+    def __init__(self, supply_map, owned_territories, home_territories):
+        assert owned_territories.keys() == home_territories.keys()
+        players = owned_territories.keys()
+        assert all(owned_territories[player] - supply_map.supply_centers == set() for player in players)
+        assert all(home_territories[player] - supply_map.supply_centers == set() for player in players)
+
+        self.supply_map = supply_map
+        self.owned_territories = owned_territories
+        self.home_territories = home_territories
