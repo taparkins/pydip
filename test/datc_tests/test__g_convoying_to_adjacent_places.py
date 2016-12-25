@@ -1,8 +1,3 @@
-import pytest
-
-from map.predefined.vanilla_dip import generate_map
-from player.command.command import SupportCommand, ConvoyTransportCommand
-from player.player import Player
 from player.unit import Unit, UnitTypes
 from test.command_helper import CommandType, CommandHelper
 from test.player_helper import PlayerHelper
@@ -142,6 +137,7 @@ def test_g_3b__kidnapping_with_a_disrupted_convoy():
         },
         'England': {
             Unit(UnitTypes.FLEET, 'English Channel'): {
+                'Belgium Coast',
                 'Irish Sea',
                 'Wales Coast',
                 'London Coast',
@@ -174,6 +170,7 @@ def test_g_4a__kidnapping_with_a_disrupted_convoy_and_opposite_move():
         },
         'England': {
             Unit(UnitTypes.FLEET, 'English Channel'): {
+                'Picardy Coast',
                 'Irish Sea',
                 'Wales Coast',
                 'London Coast',
@@ -380,7 +377,7 @@ def test_g_11b__a_convoy_to_an_adjacent_place_with_a_paradox():
     result = helper.resolve()
     assert result == {
         'England': {
-            Unit(UnitTypes.FLEET, 'North Sea'): None,
+            Unit(UnitTypes.FLEET, 'Norway Coast'): None,
             Unit(UnitTypes.FLEET, 'Skagerrak'): None,
         },
         'Russia': {
@@ -558,7 +555,7 @@ def test_g_17__the_two_unit_in_one_area_bug_moving_over_land():
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'North Sea', 'Norway Coast'),
         ]),
         PlayerHelper('Russia', [
-            CommandHelper(CommandType.CONVOY_MOVE, UnitTypes.TROOP, 'Sweden', 'Norway'),
+            CommandHelper(CommandType.MOVE, UnitTypes.TROOP, 'Sweden', 'Norway'),
             CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Norwegian Sea', 'Sweden', 'Norway'),
         ]),
     ])

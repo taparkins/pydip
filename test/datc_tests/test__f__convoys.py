@@ -498,7 +498,7 @@ def test_f_16__pandins_paradox():
             Unit(UnitTypes.FLEET, 'English Channel'): None,
         },
         'Germany': {
-            Unit(UnitTypes.TROOP, 'Belgium Coast'): None,
+            Unit(UnitTypes.FLEET, 'Belgium Coast'): None,
             Unit(UnitTypes.FLEET, 'North Sea'): None,
         },
     }
@@ -531,7 +531,7 @@ def test_f_17__pandins_extended_paradox():
             Unit(UnitTypes.FLEET, 'Yorkshire Coast'): None,
         },
         'Germany': {
-            Unit(UnitTypes.TROOP, 'Belgium Coast'): None,
+            Unit(UnitTypes.FLEET, 'Belgium Coast'): None,
             Unit(UnitTypes.FLEET, 'North Sea'): None,
         },
     }
@@ -636,8 +636,8 @@ def test_f_21__dads_army_convoy():
             CommandHelper(CommandType.SUPPORT, UnitTypes.TROOP, 'Edinburgh', 'Norway', 'Clyde'),
         ]),
         PlayerHelper('France', [
-            CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'North Atlantic Ocean', 'Mid-Atlantic Ocean'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Irish Sea', 'North Atlantic Ocean', 'Mid-Atlantic Ocean'),
+            CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Mid-Atlantic Ocean', 'North Atlantic Ocean'),
+            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Irish Sea', 'Mid-Atlantic Ocean', 'North Atlantic Ocean'),
         ]),
         PlayerHelper('England', [
             CommandHelper(CommandType.CONVOY_MOVE, UnitTypes.TROOP, 'Liverpool', 'Clyde'),
@@ -781,7 +781,7 @@ def test_f_24__second_order_paradox_with_no_resolution():
     result = helper.resolve()
     assert result == {
         'England': {
-            Unit(UnitTypes.FLEET, 'Edinburgh Coast'): None,
+            Unit(UnitTypes.FLEET, 'North Sea'): None,
             Unit(UnitTypes.FLEET, 'London Coast'): None,
             Unit(UnitTypes.FLEET, 'Irish Sea'): None,
             Unit(UnitTypes.FLEET, 'Mid-Atlantic Ocean'): None,
@@ -793,6 +793,13 @@ def test_f_24__second_order_paradox_with_no_resolution():
         },
         'Russia': {
             Unit(UnitTypes.TROOP, 'Norway'): None,
-            Unit(UnitTypes.FLEET, 'North Sea'): None,
+            Unit(UnitTypes.FLEET, 'North Sea'): {
+                'Norwegian Sea',
+                'Skagerrak',
+                'Helgoland Bight',
+                'Denmark Coast',
+                'Holland Coast',
+                'Yorkshire Coast',
+            },
         },
     }
