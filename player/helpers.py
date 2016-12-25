@@ -5,9 +5,9 @@ def unit_can_enter(map, unit, territory):
     if territory.name not in map.adjacency[unit.position]:
         return False
     else:
-        return unit_type_can_enter(map, unit.unit_type, territory)
+        return unit_type_can_enter(unit.unit_type, territory)
 
-def unit_type_can_enter(map, unit_type, territory):
+def unit_type_can_enter(unit_type, territory):
     if unit_type == UnitTypes.TROOP:
         return isinstance(territory, LandTerritory)
     elif unit_type == UnitTypes.FLEET:

@@ -21,7 +21,7 @@ class AdjustmentHelper():
             player_helper.name : Player(
                 player_helper.name,
                 self.ownership_map.supply_map.map,
-                { unit.position: unit.unit_type for unit in player_units[player_helper.name] })
+                _get_starting_configuration(player_units[player_helper.name]))
             for player_helper in player_helpers
         }
         self.calculate_adjustments(player_units)
@@ -29,7 +29,7 @@ class AdjustmentHelper():
 
     def calculate_adjustments(self, player_units):
         self.player_units = player_units
-        self.adjustment_counts = calculate_adjustments(self.ownership_map, self.player_units)
+        self.ownership_map, self.adjustment_counts = calculate_adjustments(self.ownership_map, self.player_units)
 
     def resolve(self):
         return resolve_adjustment(self.ownership_map, self.adjustment_counts, self.player_units, self.commands)
@@ -46,9 +46,15 @@ class AdjustmentHelper():
         return commands
 
     def _build_command(self, player, command):
-        unit = Unit(command.unit_type, command.unit)
+        unit = Unit(command.unit_type, command.territory)
         if command.type == AdjustmentCommandType.CREATE:
             return AdjustmentCreateCommand(self.ownership_map, player, unit)
         if command.type == AdjustmentCommandType.DISBAND:
             return AdjustmentDisbandCommand(player, unit)
         raise ValueError("Invalid command type: {}".format(command.type))
+
+def _get_starting_configuration(units):
+    return [
+        { 'territory_name' : unit.position, 'unit_type': unit.unit_type }
+        for unit in units
+    ]

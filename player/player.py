@@ -43,7 +43,7 @@ class Player:
 
             if unit_type is None:
                 continue
-            assert unit_type_can_enter(self.map, unit_type, territory)
+            assert unit_type_can_enter(unit_type, territory)
 
             self.units.append(Unit(unit_type, name))
 

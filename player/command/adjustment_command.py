@@ -1,8 +1,10 @@
-from player.command.command import Command
+from player.helpers import unit_type_can_enter
 
 
-class AdjustmentCommand(Command):
-    pass
+class AdjustmentCommand:
+    def __init__(self, player, unit):
+        self.player = player
+        self.unit = unit
 
 class AdjustmentDisbandCommand(AdjustmentCommand):
     def __init__(self, player, unit):
@@ -32,8 +34,14 @@ class AdjustmentCreateCommand(AdjustmentCommand):
     def __init__(self, ownership_map, player, unit):
         super().__init__(player, unit)
 
+        unit_territory = ownership_map.supply_map.map.name_map[unit.position]
         assert ownership_map.territory_is_owned(player.name, unit.position)
         assert ownership_map.territory_is_home(player.name, unit.position)
+        assert unit_type_can_enter(unit.unit_type, unit_territory)
+
+        for existing_unit in player.units:
+            existing_unit_territory = ownership_map.supply_map.map.name_map[existing_unit.position]
+            assert not unit_territory.same_territory(existing_unit_territory)
 
     def __eq__(self, other):
         return (super(AdjustmentCreateCommand, self).__eq__(other) and

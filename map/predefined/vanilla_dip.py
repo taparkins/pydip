@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from map.map import Map, SupplyCenterMap, OwnershipMap
 from player.unit import Unit
 from player.unit import UnitTypes
@@ -347,7 +349,7 @@ def generate_map():
         ]
 
         _VANILLA_DIP_MAP_CACHE = Map(territory_descriptors, adjacencies)
-    return _VANILLA_DIP_MAP_CACHE
+    return deepcopy(_VANILLA_DIP_MAP_CACHE)
 
 _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE = None
 def generate_supply_center_map():
@@ -390,7 +392,7 @@ def generate_supply_center_map():
             'Warsaw',
         }
         _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE = SupplyCenterMap(generate_map(), supply_centers)
-    return _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE
+    return deepcopy(_VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE)
 
 _VANILLA_DIP_HOME_TERRITORY_CACHE = None
 def generate_home_territories():
@@ -434,7 +436,7 @@ def generate_home_territories():
                 'Smyrna',
             },
         }
-    return _VANILLA_DIP_HOME_TERRITORY_CACHE
+    return deepcopy(_VANILLA_DIP_HOME_TERRITORY_CACHE)
 
 _VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE = None
 def generate_starting_ownership_map():
@@ -491,4 +493,4 @@ def generate_starting_player_units():
                 Unit(UnitTypes.TROOP, 'Smyrna'),
             },
         }
-    return _VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE
+    return deepcopy(_VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE)
