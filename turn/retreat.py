@@ -19,22 +19,22 @@ and, of course, without any retreat requirements.
 """
 def resolve_retreats(map, retreat_map, commands):
     assert all(isinstance(command, RetreatCommand) for command in commands)
-    retreaters = { (command.player, command.unit) for command in commands }
+    retreaters = { (command.player.name, command.unit) for command in commands }
     valid_retreaters = set()
     for player in retreat_map.keys():
-        valid_retreaters |= { unit for unit in retreat_map[player].keys() if retreat_map[player][unit] is not None }
+        valid_retreaters |= { (player, unit) for unit in retreat_map[player].keys() if retreat_map[player][unit] is not None }
     assert retreaters == valid_retreaters
 
-    result_map = defaultdict(set)
+    result_map = { player : set() for player in retreat_map }
     for player in retreat_map:
         for unit in retreat_map[player]:
             if retreat_map[player][unit] is None:
                 result_map[player].add(unit)
 
-    commands = filter(lambda c: isinstance(c, RetreatMoveCommand), commands)
+    commands = list(filter(lambda c: isinstance(c, RetreatMoveCommand), commands))
     for command in commands:
-        other_commands = filter(lambda c: c != command, commands)
+        other_commands = list(filter(lambda c: c != command, commands))
         if all(command.destination != other_command.destination for other_command in other_commands):
-            result_map[command.player].add(Unit(command.unit.unit_type, command.destination))
+            result_map[command.player.name].add(Unit(command.unit.unit_type, command.destination))
 
     return result_map

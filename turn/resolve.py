@@ -362,14 +362,15 @@ def compute_retreats(map, command_map, commands, resolutions):
             else:
                 player_results[command.player.name][command.unit] = None
         else:
-            attackers = command_map.get_attackers(current_position) + command_map.get_convoy_attackers(current_position)
-            attackers = list(filter(lambda c: resolutions[c.unit.position], attackers))
+            direct_attackers = list(filter(lambda c: resolutions[c.unit.position], command_map.get_attackers(current_position)))
+            convoy_attackers = list(filter(lambda c: resolutions[c.unit.position], command_map.get_convoy_attackers(current_position)))
+            attackers = direct_attackers + convoy_attackers
             if len(attackers) == 0:
                 player_results[command.player.name][command.unit] = None
             else:
                 retreat_options = map.adjacency[current_position]
                 retreat_options = filter(lambda t: t not in occupied_territories, retreat_options)
-                retreat_options = filter(lambda t: all(t not in _applicable_territories(map, attacker.unit.position) for attacker in attackers), retreat_options)
+                retreat_options = filter(lambda t: all(t not in _applicable_territories(map, attacker.unit.position) for attacker in direct_attackers), retreat_options)
                 retreat_options = filter(lambda t: _hold_strength(map, command_map, t) == 0, retreat_options)
                 retreat_options = filter(lambda t: all(_prevent_strength(map, command_map, attacker) == 0 for attacker in command_map.get_attackers(t)), retreat_options)
 

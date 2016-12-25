@@ -52,3 +52,34 @@ class CommandHelper():
 
     def _init_hold(self, args):
         assert len(args) == 0
+
+
+class RetreatCommandType(Enum):
+    MOVE = 0
+    DISBAND = 1
+
+class RetreatCommandHelper():
+    """ RetreatCommandType, indicating type for command """
+    type = None
+
+    def __init__(self, type, retreat_map, unit_type, unit, *args):
+        self.type = type
+        self.retreat_map = retreat_map
+        self.unit_type = unit_type
+        self.unit = unit
+        self._init_args(type, args)
+
+    def _init_args(self, type, args):
+        if type == RetreatCommandType.MOVE:
+            self._init_move(args)
+        elif type == RetreatCommandType.DISBAND:
+            self._init_disband(args)
+        else:
+            raise ValueError("Invalid type: {}".format(type))
+
+    def _init_move(self, args):
+        assert len(args) == 1
+        self.destination = args[0]
+
+    def _init_disband(self, args):
+        assert len(args) == 0

@@ -12,8 +12,8 @@ class RetreatCommand(Command):
     """
     def __init__(self, retreat_map, player, unit):
         super().__init__(player, unit)
-        assert unit.position in retreat_map[player]
-        assert retreat_map[player][unit] is not None
+        assert unit in retreat_map[player.name]
+        assert retreat_map[player.name][unit] is not None
 
 class RetreatDisbandCommand(RetreatCommand):
     def __init__(self, retreat_map, player, unit):
@@ -45,7 +45,7 @@ class RetreatMoveCommand(RetreatCommand):
         super().__init__(retreat_map, player, unit)
         map = self.player.map
         assert destination in map.name_map
-        assert destination in retreat_map[player][unit]
+        assert destination in retreat_map[player.name][unit]
         self.destination = destination
 
     def __eq__(self, other):
