@@ -108,10 +108,12 @@ def _find_disbands(player, adjustment_counts, player_units, commands):
     # if too few disbands, begin disbanding units in alphabetical order
     while len(disbands) < expected_disband_count:
         remaining_units = sorted(
-            list(set(player.units) - disbands),
+            list(set(player_units[player]) - disbands),
             key = lambda u: u.position.lower()
         )
         disbands.add(remaining_units[0])
+
+    return disbands
 
 def _find_creates(map, player, adjustment_counts, commands):
     permitted_create_count = adjustment_counts[player]
@@ -172,5 +174,5 @@ def _validate_adjustments(ownership_map, adjustment_counts, commands):
 
     for player, count in adjustment_counts.items():
         if count < 0:
-            if len(provided_adjustment_terriories[player]) != -count:
+            if len(provided_adjustment_terriories.get(player, set())) != -count:
                 raise AssertionError("{} failed to Disband sufficient units this turn".format(player))
