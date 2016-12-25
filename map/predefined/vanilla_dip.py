@@ -1,4 +1,6 @@
-from map.map import Map, SupplyCenterMap
+from map.map import Map, SupplyCenterMap, OwnershipMap
+from player.unit import Unit
+from player.unit import UnitTypes
 
 _VANILLA_DIP_MAP_CACHE = None
 def generate_map():
@@ -389,3 +391,104 @@ def generate_supply_center_map():
         }
         _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE = SupplyCenterMap(generate_map(), supply_centers)
     return _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE
+
+_VANILLA_DIP_HOME_TERRITORY_CACHE = None
+def generate_home_territories():
+    global _VANILLA_DIP_HOME_TERRITORY_CACHE
+    if not _VANILLA_DIP_HOME_TERRITORY_CACHE:
+        _VANILLA_DIP_HOME_TERRITORY_CACHE = {
+            'England': {
+                'Liverpool',
+                'London',
+                'Edinburgh',
+            },
+            'France': {
+                'Brest',
+                'Paris',
+                'Marseilles',
+            },
+            'Germany': {
+                'Kiel',
+                'Berlin',
+                'Munich',
+            },
+            'Italy': {
+                'Venice',
+                'Rome',
+                'Naples',
+            },
+            'Russia': {
+                'St. Petersburg',
+                'Moscow',
+                'Warsaw',
+                'Sevastopol',
+            },
+            'Austria': {
+                'Vienna',
+                'Budapest',
+                'Trieste',
+            },
+            'Turkey': {
+                'Constantinople',
+                'Ankara',
+                'Smyrna',
+            },
+        }
+    return _VANILLA_DIP_HOME_TERRITORY_CACHE
+
+_VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE = None
+def generate_starting_ownership_map():
+    global _VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE
+    if not _VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE:
+        # Vanilla Diplomacy uses the home territories as starting ownership
+        _VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE = OwnershipMap(
+            generate_supply_center_map(),
+            generate_home_territories(),
+            generate_home_territories(),
+        )
+    return _VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE
+
+_VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE = None
+def generate_starting_player_units():
+    global _VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE
+    if not _VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE:
+        # Vanilla Diplomacy uses the home territories as starting ownership
+        _VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE = {
+            'England': {
+                Unit(UnitTypes.TROOP, 'Liverpool'),
+                Unit(UnitTypes.FLEET, 'London Coast'),
+                Unit(UnitTypes.FLEET, 'Edinburgh Coast'),
+            },
+            'France': {
+                Unit(UnitTypes.FLEET, 'Brest Coast'),
+                Unit(UnitTypes.TROOP, 'Paris'),
+                Unit(UnitTypes.TROOP, 'Marseilles'),
+            },
+            'Germany': {
+                Unit(UnitTypes.FLEET, 'Kiel Coast'),
+                Unit(UnitTypes.TROOP, 'Berlin'),
+                Unit(UnitTypes.TROOP, 'Munich'),
+            },
+            'Italy': {
+                Unit(UnitTypes.TROOP, 'Venice'),
+                Unit(UnitTypes.TROOP, 'Rome'),
+                Unit(UnitTypes.FLEET, 'Naples Coast'),
+            },
+            'Russia': {
+                Unit(UnitTypes.FLEET, 'St. Petersburg South Coast'),
+                Unit(UnitTypes.TROOP, 'Moscow'),
+                Unit(UnitTypes.TROOP, 'Warsaw'),
+                Unit(UnitTypes.FLEET, 'Sevastopol Coast'),
+            },
+            'Austria': {
+                Unit(UnitTypes.TROOP, 'Vienna'),
+                Unit(UnitTypes.TROOP, 'Budapest'),
+                Unit(UnitTypes.FLEET, 'Trieste Coast'),
+            },
+            'Turkey': {
+                Unit(UnitTypes.TROOP, 'Constantinople'),
+                Unit(UnitTypes.FLEET, 'Ankara Coast'),
+                Unit(UnitTypes.TROOP, 'Smyrna'),
+            },
+        }
+    return _VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE

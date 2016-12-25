@@ -83,3 +83,33 @@ class RetreatCommandHelper():
 
     def _init_disband(self, args):
         assert len(args) == 0
+
+
+class AdjustmentCommandType(Enum):
+    CREATE = 0
+    DISBAND = 1
+
+class AdjustmentCommandHelper():
+    """ AdjustmentCommandType, indicating type for command """
+    type = None
+
+    def __init__(self, type, unit_type, unit, *args):
+        self.type = type
+        self.unit_type = unit_type
+        self.unit = unit
+        self._init_args(type, args)
+
+    def _init_args(self, type, args):
+        if type == AdjustmentCommandType.CREATE:
+            self._init_create(args)
+        elif type == AdjustmentCommandType.DISBAND:
+            self._init_disband(args)
+        else:
+            raise ValueError("Invalid type: {}".format(type))
+
+    def _init_create(self, args):
+        assert len(args) == 1
+        self.ownership_map = args[0]
+
+    def _init_disband(self, args):
+        assert len(args) == 0
