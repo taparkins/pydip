@@ -1,4 +1,7 @@
+from copy import deepcopy
+
 from map.map import OwnershipMap
+from player.command.adjustment_command import AdjustmentCommand, AdjustmentCreateCommand, AdjustmentDisbandCommand
 
 """
 Given a map of current ownership, and a map of new unit positions (after
@@ -48,3 +51,112 @@ def calculate_adjustments(ownernship_map, player_units):
     }
 
     return new_ownership_map, adjustment_counts
+
+"""
+Given an OwnershipMap representing the current board state, a mapping of adjustment expectations
+(expected to be output from calcluate_adjustments), a collection of current player units, and a
+list of AdjustmentCommands to issue, resolves the adjustments and determines what units each
+player will end up with at the end of the turn.
+
+This specific function also validates several properties that violate strict adherence to Civil
+Disobedience rules. This system typically asserts that users are not allowed to issue illegal
+command sets, and that includes not issuing commands that are required (e.g. Disbanding during
+unit adjustment). However, forcing the caller to follow these atypical policies can potentially
+lead to confusion and invalid game states.
+
+To that end, there are two adjustment functions provided: one with strict validation, forcing the
+caller to perform sanity checks (and potentially implement Civil Disobedience policies) themselves,
+and a less strictly validated version that applies Civil Disobedience policies automatically when
+improper order counts are provided.
+
+
+Both versions return a mapping of player names to sets of Units, representing the units owned by
+each player after adjustments have been resolved.
+"""
+def resolve_adjustment__validated(ownership_map, adjustment_counts, player_units, commands):
+    _validate_adjustments(adjustment_counts, player_units, commands)
+    resolve_adjustment(ownership_map, adjustment_counts, player_units, commands)
+
+def resolve_adjustment(ownership_map, adjustment_counts, player_units, commands):
+    new_player_units = deepcopy(player_units)
+    for player, count in adjustment_counts.items():
+        if count < 0:
+            disbands = _find_disbands(player, adjustment_counts, player_units, commands)
+            new_player_units -= disbands
+        elif count > 0:
+            creates = _find_creates(player, adjustment_counts, commands)
+            new_player_units += creates
+
+    return new_player_units
+
+def _find_disbands(player, adjustment_counts, player_units, commands):
+    expected_disband_count = -adjustment_counts[player]
+
+    filtered_commands = filter(lambda c: isinstance(c, AdjustmentDisbandCommand), commands)
+    filtered_commands = filter(lambda c: c.player.name == player, filtered_commands)
+    filtered_commands = list(filtered_commands)
+
+    # if too many disbands, truncate
+    if len(filtered_commands) > expected_disband_count:
+        filtered_commands = filtered_commands[:expected_disband_count]
+    disbands = { command.unit for command in filtered_commands }
+
+    # if too few disbands, begin disbanding units in alphabetical order
+    while len(disbands) < expected_disband_count:
+        remaining_units = sorted(
+            list(set(player.units) - disbands),
+            key = lambda u: u.position.lower()
+        )
+        disbands.add(remaining_units[0])
+
+def _find_creates(map, player, adjustment_counts, commands):
+    permitted_create_count = adjustment_counts[player]
+
+    filtered_commands = filter(lambda c: isinstance(c, AdjustmentDisbandCommand), commands)
+    filtered_commands = filter(lambda c: c.player.name == player, filtered_commands)
+    filtered_commands = list(filtered_commands)
+
+    # if two creates on same territory, keep first only
+    territories_with_creation = set()
+    preserved_commands = []
+    for command in filtered_commands:
+        relevant_name = map.relevant_name_for_territory(command.unit.position)
+        if relevant_name in territories_with_creation:
+            continue
+        territories_with_creation.add(relevant_name)
+        preserved_commands.append(command)
+
+    # if too many creates, truncate
+    if len(preserved_commands) > permitted_create_count:
+        preserved_commands = preserved_commands[:permitted_create_count]
+    return { command.unit for command in preserved_commands }
+
+def _validate_adjustments(adjustment_counts, player_units, commands):
+    assert all(isinstance(command, AdjustmentCommand) for command in commands)
+
+    provided_adjustment_counts = dict()
+    for command in commands:
+        player = command.player.name
+        if isinstance(command, AdjustmentCreateCommand):
+            if player not in provided_adjustment_counts:
+                provided_adjustment_counts[player] = 0
+            elif adjustment_counts[player] < 0:
+                raise AssertionError("{} attempting to Create when required to Disband".format(player))
+            elif provided_adjustment_counts[player] >= adjustment_counts[player]:
+                raise AssertionError("{} attempting to Create too many units in one turn".format(player))
+            provided_adjustment_counts[player] += 1
+        elif isinstance(command, AdjustmentDisbandCommand):
+            if player not in provided_adjustment_counts:
+                provided_adjustment_counts[player] = 0
+            elif adjustment_counts[player] > 0:
+                raise AssertionError("{} attempting to Disband when expected to Create".format(player))
+            elif provided_adjustment_counts[player] <= adjustment_counts[player]:
+                raise AssertionError("{} attempting to Disband too many units in one turn".format(player))
+            provided_adjustment_counts[player] -= 1
+        else:
+            raise AssertionError("Unexpected AdjustmentCommand type")
+
+    for player, count in provided_adjustment_counts.items():
+        if count < 0:
+            if adjustment_counts[player] != count:
+                raise AssertionError("{} failed to Disband sufficient units this turn".format(player))

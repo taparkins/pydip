@@ -1,4 +1,5 @@
-from map.territory import LandTerritory, SeaTerritory
+from map.territory import LandTerritory, SeaTerritory, CoastTerritory
+
 
 class Map:
     """ String -> Territory """
@@ -29,6 +30,12 @@ class Map:
 
         self._setup_name_map(territory_descriptors)
         self._setup_adjacencies(adjacencies)
+
+    def relevant_name_for_territory(self, territory_name):
+        territory = self.name_map[territory_name]
+        if isinstance(territory, CoastTerritory):
+            territory_name = territory.parent.name
+        return territory_name
 
     def _setup_name_map(self, territory_descriptors):
         for descriptor in territory_descriptors:
@@ -93,3 +100,11 @@ class OwnershipMap:
         self.supply_map = supply_map
         self.owned_territories = owned_territories
         self.home_territories = home_territories
+
+    def territory_is_owned(self, player, territory_name):
+        relevant_name = self.supply_map.map.relevant_name_for_territory(territory_name)
+        return relevant_name in self.owned_territories[player]
+
+    def territory_is_home(self, player, territory_name):
+        relevant_name = self.supply_map.map.relevant_name_for_territory(territory_name)
+        return relevant_name in self.home_territories[player]
