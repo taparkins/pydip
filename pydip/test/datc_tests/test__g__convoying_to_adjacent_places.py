@@ -26,9 +26,11 @@ def test_g_1__two_units_can_swap_places_by_convoy():
         },
     }
 
+
 # Tests G.2-G.4, G.9, and G.11 have been modified, because they rely on ambiguous convoy /
 # movements, which this system does not allow. Each test has been duplicated to test each
 # potential interpretation is covered appropriately by the system, just for thorough testing.
+
 
 def test_g_2a__kidnapping_an_army():
     helper = TurnHelper([
@@ -56,6 +58,7 @@ def test_g_2a__kidnapping_an_army():
         },
     }
 
+
 def test_g_2b__kidnapping_an_army():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -81,6 +84,7 @@ def test_g_2b__kidnapping_an_army():
             Unit(UnitTypes.FLEET, 'Skagerrak'): None,
         },
     }
+
 
 def test_g_3a__kidnapping_with_a_disrupted_convoy():
     helper = TurnHelper([
@@ -114,6 +118,7 @@ def test_g_3a__kidnapping_with_a_disrupted_convoy():
         },
     }
 
+
 def test_g_3b__kidnapping_with_a_disrupted_convoy():
     helper = TurnHelper([
         PlayerHelper('France', [
@@ -145,6 +150,7 @@ def test_g_3b__kidnapping_with_a_disrupted_convoy():
             },
         },
     }
+
 
 def test_g_4a__kidnapping_with_a_disrupted_convoy_and_opposite_move():
     helper = TurnHelper([
@@ -183,6 +189,7 @@ def test_g_4a__kidnapping_with_a_disrupted_convoy_and_opposite_move():
         },
     }
 
+
 def test_g_4b__kidnapping_with_a_disrupted_convoy_and_opposite_move():
     helper = TurnHelper([
         PlayerHelper('France', [
@@ -216,9 +223,11 @@ def test_g_4b__kidnapping_with_a_disrupted_convoy_and_opposite_move():
         },
     }
 
+
 # Tests G.5-G.7 are excluded, because they are based on the notion of using "intent"
 # to determine whether a convoy or a move order was intended, which is not permitted
 # in this system. The tests are not meaningful, so are skipped.
+
 
 def test_g_8__explicit_convoy_that_is_not_there():
     helper = TurnHelper([
@@ -241,6 +250,7 @@ def test_g_8__explicit_convoy_that_is_not_there():
             Unit(UnitTypes.TROOP, 'Kiel'): None,
         },
     }
+
 
 def test_g_9a__swapped_or_dislodged():
     helper = TurnHelper([
@@ -268,6 +278,7 @@ def test_g_9a__swapped_or_dislodged():
         },
     }
 
+
 def test_g_9b__swapped_or_dislodged():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -291,6 +302,7 @@ def test_g_9b__swapped_or_dislodged():
             Unit(UnitTypes.TROOP, 'Norway'): None,
         },
     }
+
 
 def test_g_10__swapped_or_head_to_head_battle():
     helper = TurnHelper([
@@ -332,6 +344,7 @@ def test_g_10__swapped_or_head_to_head_battle():
         },
     }
 
+
 def test_g_11a__a_convoy_to_an_adjacent_place_with_a_paradox():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -361,6 +374,7 @@ def test_g_11a__a_convoy_to_an_adjacent_place_with_a_paradox():
         },
     }
 
+
 def test_g_11b__a_convoy_to_an_adjacent_place_with_a_paradox():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -389,12 +403,19 @@ def test_g_11b__a_convoy_to_an_adjacent_place_with_a_paradox():
         },
     }
 
+
 def test_g_12__swapping_two_units_with_two_convoys():
     helper = TurnHelper([
         PlayerHelper('England', [
             CommandHelper(CommandType.CONVOY_MOVE, UnitTypes.TROOP, 'Liverpool', 'Edinburgh'),
-            CommandHelper(CommandType.CONVOY_TRANSPORT, UnitTypes.FLEET, 'North Atlantic Ocean', 'Liverpool', 'Edinburgh'),
             CommandHelper(CommandType.CONVOY_TRANSPORT, UnitTypes.FLEET, 'Norwegian Sea', 'Liverpool', 'Edinburgh'),
+            CommandHelper(
+                CommandType.CONVOY_TRANSPORT,
+                UnitTypes.FLEET,
+                'North Atlantic Ocean',
+                'Liverpool',
+                'Edinburgh',
+            ),
         ]),
         PlayerHelper('Germany', [
             CommandHelper(CommandType.CONVOY_MOVE, UnitTypes.TROOP, 'Edinburgh', 'Liverpool'),
@@ -419,6 +440,7 @@ def test_g_12__swapping_two_units_with_two_convoys():
         },
     }
 
+
 def test_g_13__support_cut_on_attack_on_itself_via_convoy():
     helper = TurnHelper([
         PlayerHelper('Austria', [
@@ -442,6 +464,7 @@ def test_g_13__support_cut_on_attack_on_itself_via_convoy():
             Unit(UnitTypes.FLEET, 'Albania Coast'): None,
         },
     }
+
 
 def test_g_14__bounce_by_convoy_to_adjacent_place():
     helper = TurnHelper([
@@ -483,6 +506,7 @@ def test_g_14__bounce_by_convoy_to_adjacent_place():
         },
     }
 
+
 def test_g_15__bounce_and_dislodge_with_double_convoy():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -515,6 +539,7 @@ def test_g_15__bounce_and_dislodge_with_double_convoy():
         },
     }
 
+
 def test_g_16__the_two_unit_in_one_area_bug_moving_by_convoy():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -545,6 +570,7 @@ def test_g_16__the_two_unit_in_one_area_bug_moving_by_convoy():
         },
     }
 
+
 def test_g_17__the_two_unit_in_one_area_bug_moving_over_land():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -574,6 +600,7 @@ def test_g_17__the_two_unit_in_one_area_bug_moving_over_land():
             Unit(UnitTypes.FLEET, 'Norwegian Sea'): None,
         },
     }
+
 
 def test_g_18__the_two_unit_in_one_area_bug_with_double_convoy():
 

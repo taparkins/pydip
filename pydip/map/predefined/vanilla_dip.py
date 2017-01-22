@@ -4,7 +4,14 @@ from pydip.map.map import Map, SupplyCenterMap, OwnershipMap
 from pydip.player.unit import Unit
 from pydip.player.unit import UnitTypes
 
+
 _VANILLA_DIP_MAP_CACHE = None
+_VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE = None
+_VANILLA_DIP_HOME_TERRITORY_CACHE = None
+_VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE = None
+_VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE = None
+
+
 def generate_map():
     global _VANILLA_DIP_MAP_CACHE
     if not _VANILLA_DIP_MAP_CACHE:
@@ -351,7 +358,7 @@ def generate_map():
         _VANILLA_DIP_MAP_CACHE = Map(territory_descriptors, adjacencies)
     return deepcopy(_VANILLA_DIP_MAP_CACHE)
 
-_VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE = None
+
 def generate_supply_center_map():
     global _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE
     if not _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE:
@@ -394,7 +401,7 @@ def generate_supply_center_map():
         _VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE = SupplyCenterMap(generate_map(), supply_centers)
     return deepcopy(_VANILLA_DIP_SUPPLY_CENTER_MAP_CACHE)
 
-_VANILLA_DIP_HOME_TERRITORY_CACHE = None
+
 def generate_home_territories():
     global _VANILLA_DIP_HOME_TERRITORY_CACHE
     if not _VANILLA_DIP_HOME_TERRITORY_CACHE:
@@ -438,7 +445,7 @@ def generate_home_territories():
         }
     return deepcopy(_VANILLA_DIP_HOME_TERRITORY_CACHE)
 
-_VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE = None
+
 def generate_starting_ownership_map():
     global _VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE
     if not _VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE:
@@ -450,7 +457,7 @@ def generate_starting_ownership_map():
         )
     return _VANILLA_DIP_STARTING_OWNERSHIP_MAP_CACHE
 
-_VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE = None
+
 def generate_starting_player_units():
     global _VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE
     if not _VANILLA_DIP_STARTING_PLAYER_UNITS_CACHE:

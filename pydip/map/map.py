@@ -68,6 +68,7 @@ class Map:
             self.adjacency[name_a].add(name_b)
             self.adjacency[name_b].add(name_a)
 
+
 class SupplyCenterMap:
     """ Map """
     game_map = None
@@ -80,6 +81,7 @@ class SupplyCenterMap:
 
         self.supply_centers = set(supply_centers)
         self.game_map = game_map
+
 
 class OwnershipMap:
     """ SupplyCenterMap """

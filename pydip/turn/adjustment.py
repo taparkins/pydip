@@ -3,25 +3,26 @@ from copy import deepcopy
 from pydip.map.map import OwnershipMap
 from pydip.player.command.adjustment_command import AdjustmentCommand, AdjustmentCreateCommand, AdjustmentDisbandCommand
 
-"""
-Given a map of current ownership, and a map of new unit positions (after
-retreats have been resolved), this function will compute a new ownership
-map as well as what adjustments each player must perform. NOTE: this
-function has no knowledge of Spring vs Fall turns, so the caller should
-only use this after retreats in the Fall.
 
-ownership_map should be an OwnershipMap for the current game.
-
-player_units should be the output from turn.retreat.resolve_retreats --
-that is, a map of player names to sets of units after retreat resolution.
-
-This function returns two values: First, a new OwnershipMap updated for
-new unit positions. Second, a map of player names to integers which
-represent their adjustment requirements. Positive integers denote players
-who are allowed to build units this turn. Negative integers indicate the
-player must disband units this turn.
-"""
 def calculate_adjustments(ownership_map, player_units):
+    """
+    Given a map of current ownership, and a map of new unit positions (after
+    retreats have been resolved), this function will compute a new ownership
+    map as well as what adjustments each player must perform. NOTE: this
+    function has no knowledge of Spring vs Fall turns, so the caller should
+    only use this after retreats in the Fall.
+
+    ownership_map should be an OwnershipMap for the current game.
+
+    player_units should be the output from turn.retreat.resolve_retreats --
+    that is, a map of player names to sets of units after retreat resolution.
+
+    This function returns two values: First, a new OwnershipMap updated for
+    new unit positions. Second, a map of player names to integers which
+    represent their adjustment requirements. Positive integers denote players
+    who are allowed to build units this turn. Negative integers indicate the
+    player must disband units this turn.
+    """
     all_players = ownership_map.owned_territories.keys()
     new_owned_territories = { player : set() for player in all_players }
 
@@ -56,30 +57,32 @@ def calculate_adjustments(ownership_map, player_units):
 
     return new_ownership_map, adjustment_counts
 
-"""
-Given an OwnershipMap representing the current board state, a mapping of adjustment expectations
-(expected to be output from calcluate_adjustments), a collection of current player units, and a
-list of AdjustmentCommands to issue, resolves the adjustments and determines what units each
-player will end up with at the end of the turn.
 
-This specific function also validates several properties that violate strict adherence to Civil
-Disobedience rules. This system typically asserts that users are not allowed to issue illegal
-command sets, and that includes not issuing commands that are required (e.g. Disbanding during
-unit adjustment). However, forcing the caller to follow these atypical policies can potentially
-lead to confusion and invalid game states.
-
-To that end, there are two adjustment functions provided: one with strict validation, forcing the
-caller to perform sanity checks (and potentially implement Civil Disobedience policies) themselves,
-and a less strictly validated version that applies Civil Disobedience policies automatically when
-improper order counts are provided.
-
-
-Both versions return a mapping of player names to sets of Units, representing the units owned by
-each player after adjustments have been resolved.
-"""
 def resolve_adjustment__validated(ownership_map, adjustment_counts, player_units, commands):
+    """
+    Given an OwnershipMap representing the current board state, a mapping of adjustment expectations
+    (expected to be output from calcluate_adjustments), a collection of current player units, and a
+    list of AdjustmentCommands to issue, resolves the adjustments and determines what units each
+    player will end up with at the end of the turn.
+
+    This specific function also validates several properties that violate strict adherence to Civil
+    Disobedience rules. This system typically asserts that users are not allowed to issue illegal
+    command sets, and that includes not issuing commands that are required (e.g. Disbanding during
+    unit adjustment). However, forcing the caller to follow these atypical policies can potentially
+    lead to confusion and invalid game states.
+
+    To that end, there are two adjustment functions provided: one with strict validation, forcing the
+    caller to perform sanity checks (and potentially implement Civil Disobedience policies) themselves,
+    and a less strictly validated version that applies Civil Disobedience policies automatically when
+    improper order counts are provided.
+
+
+    Both versions return a mapping of player names to sets of Units, representing the units owned by
+    each player after adjustments have been resolved.
+    """
     _validate_adjustments(ownership_map, adjustment_counts, commands)
     resolve_adjustment(ownership_map, adjustment_counts, player_units, commands)
+
 
 def resolve_adjustment(ownership_map, adjustment_counts, player_units, commands):
     new_player_units = deepcopy(player_units)
@@ -92,6 +95,7 @@ def resolve_adjustment(ownership_map, adjustment_counts, player_units, commands)
             new_player_units[player] |= creates
 
     return new_player_units
+
 
 def _find_disbands(player, adjustment_counts, player_units, commands):
     expected_disband_count = -adjustment_counts[player]
@@ -115,6 +119,7 @@ def _find_disbands(player, adjustment_counts, player_units, commands):
 
     return disbands
 
+
 def _find_creates(game_map, player, adjustment_counts, commands):
     permitted_create_count = adjustment_counts[player]
 
@@ -137,12 +142,14 @@ def _find_creates(game_map, player, adjustment_counts, commands):
         preserved_commands = preserved_commands[:permitted_create_count]
     return { command.unit for command in preserved_commands }
 
+
 def _validate_adjustments(ownership_map, adjustment_counts, commands):
     assert all(isinstance(command, AdjustmentCommand) for command in commands)
 
     provided_adjustment_terriories = dict()
     for command in commands:
         player = command.player.name
+        game_map = ownership_map.supply_map.game_map
         if isinstance(command, AdjustmentCreateCommand):
             if player not in provided_adjustment_terriories:
                 provided_adjustment_terriories[player] = set()
@@ -151,7 +158,7 @@ def _validate_adjustments(ownership_map, adjustment_counts, commands):
             elif len(provided_adjustment_terriories[player]) >= adjustment_counts[player]:
                 raise AssertionError("{} attempting to Create too many units in one turn".format(player))
 
-            relevant_command_territory = ownership_map.supply_map.game_map.relevant_name_for_territory(command.unit.position)
+            relevant_command_territory = game_map.relevant_name_for_territory(command.unit.position)
             if relevant_command_territory in provided_adjustment_terriories[player]:
                 raise AssertionError("{} attempting to Create multiple units in same territory".format(player))
 
@@ -164,7 +171,7 @@ def _validate_adjustments(ownership_map, adjustment_counts, commands):
             elif len(provided_adjustment_terriories[player]) >= -adjustment_counts[player]:
                 raise AssertionError("{} attempting to Disband too many units in one turn".format(player))
 
-            relevant_command_territory = ownership_map.supply_map.game_map.relevant_name_for_territory(command.unit.position)
+            relevant_command_territory = game_map.relevant_name_for_territory(command.unit.position)
             if relevant_command_territory in provided_adjustment_terriories[player]:
                 raise AssertionError("{} attempting to Disband same unit multiple times".format(player))
 

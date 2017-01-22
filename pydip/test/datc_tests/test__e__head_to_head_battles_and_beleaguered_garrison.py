@@ -31,6 +31,7 @@ def test_e_1__dislodged_unit_has_no_effect_on_attackers_area():
         },
     }
 
+
 def test_e_2__no_self_dislodgement_in_head_to_head_battle():
     helper = TurnHelper([
         PlayerHelper('Germany', [
@@ -48,6 +49,7 @@ def test_e_2__no_self_dislodgement_in_head_to_head_battle():
             Unit(UnitTypes.TROOP, 'Munich'): None,
         },
     }
+
 
 def test_e_3__no_help_in_dislodging_own_unit():
     helper = TurnHelper([
@@ -70,6 +72,7 @@ def test_e_3__no_help_in_dislodging_own_unit():
             Unit(UnitTypes.FLEET, 'Kiel Coast'): None,
         }
     }
+
 
 def test_e_4__non_dislodged_loser_still_has_effect():
     helper = TurnHelper([
@@ -114,6 +117,7 @@ def test_e_4__non_dislodged_loser_still_has_effect():
             Unit(UnitTypes.TROOP, 'Kiel'): None,
         }
     }
+
 
 def test_e_5__loser_dislodged_by_another_army_still_has_effect():
     helper = TurnHelper([
@@ -165,6 +169,7 @@ def test_e_5__loser_dislodged_by_another_army_still_has_effect():
         }
     }
 
+
 def test_e_6__not_dislodged_because_of_own_support_still_has_effect():
     helper = TurnHelper([
         PlayerHelper('Germany', [
@@ -199,6 +204,7 @@ def test_e_6__not_dislodged_because_of_own_support_still_has_effect():
         }
     }
 
+
 def test_e_7__no_self_dislodgement_with_beleaguered_garrison():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -230,6 +236,7 @@ def test_e_7__no_self_dislodgement_with_beleaguered_garrison():
             Unit(UnitTypes.FLEET, 'Skagerrak'): None,
         }
     }
+
 
 def test_e_8__no_self_dislodgement_with_beleaguered_garrison_and_head_to_head_battle():
     helper = TurnHelper([
@@ -263,6 +270,7 @@ def test_e_8__no_self_dislodgement_with_beleaguered_garrison_and_head_to_head_ba
         }
     }
 
+
 def test_e_9__almost_self_dislodgement_with_beleaguered_garrison():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -294,6 +302,7 @@ def test_e_9__almost_self_dislodgement_with_beleaguered_garrison():
             Unit(UnitTypes.FLEET, 'Skagerrak'): None,
         }
     }
+
 
 def test_e_10__almost_circular_movement_with_no_self_dislodgement_with_beleaguered_garrison():
     helper = TurnHelper([
@@ -329,6 +338,7 @@ def test_e_10__almost_circular_movement_with_no_self_dislodgement_with_beleaguer
         }
     }
 
+
 def test_e_11__no_self_dislodgement_with_beleaguered_garrison_unit_swap_with_adjacent_convoying_and_two_coasts():
     helper = TurnHelper([
         PlayerHelper('France', [
@@ -342,7 +352,13 @@ def test_e_11__no_self_dislodgement_with_beleaguered_garrison_unit_swap_with_adj
         ]),
         PlayerHelper('Italy', [
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Portugal Coast', 'Spain North Coast'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Western Mediterranean Sea', 'Portugal Coast', 'Spain North Coast'),
+            CommandHelper(
+                CommandType.SUPPORT,
+                UnitTypes.FLEET,
+                'Western Mediterranean Sea',
+                'Portugal Coast',
+                'Spain North Coast',
+            ),
         ])
     ])
 
@@ -362,6 +378,7 @@ def test_e_11__no_self_dislodgement_with_beleaguered_garrison_unit_swap_with_adj
             Unit(UnitTypes.FLEET, 'Western Mediterranean Sea'): None,
         }
     }
+
 
 def test_e_12__support_on_attack_on_own_unit_can_be_used_for_other_means():
     helper = TurnHelper([
@@ -392,6 +409,7 @@ def test_e_12__support_on_attack_on_own_unit_can_be_used_for_other_means():
             Unit(UnitTypes.TROOP, 'Rumania'): None,
         }
     }
+
 
 def test_e_13__three_way_beleaguered_garrison():
     helper = TurnHelper([
@@ -431,7 +449,9 @@ def test_e_13__three_way_beleaguered_garrison():
         }
     }
 
+
 # Test E.14 is skipped, because it relies on an illegal move that this system disallows
+
 
 def test_e_15__the_friendly_head_to_head_battle():
     helper = TurnHelper([

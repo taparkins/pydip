@@ -27,6 +27,7 @@ class Command:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+
 class MoveCommand(Command):
     """
     String -- Name of territory being moved to.
@@ -61,8 +62,9 @@ class MoveCommand(Command):
             self.destination,
         )
 
-""" Holding is really just moving to your current position """
+
 class HoldCommand(MoveCommand):
+    """ Holding is really just moving to your current position """
     def __init__(self, player, unit):
         super().__init__(player, unit, unit.position)
 
@@ -72,6 +74,7 @@ class HoldCommand(MoveCommand):
             self.unit.unit_type,
             self.unit.position,
         )
+
 
 class SupportCommand(Command):
     """ Unit -- unit to support """
@@ -124,6 +127,7 @@ class SupportCommand(Command):
             self.destination,
         )
 
+
 class ConvoyMoveCommand(Command):
     """
     String -- name of territory convoying to.
@@ -168,6 +172,7 @@ class ConvoyMoveCommand(Command):
             self.unit.position,
             self.destination,
         )
+
 
 class ConvoyTransportCommand(Command):
     """

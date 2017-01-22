@@ -1,5 +1,11 @@
 from pydip.map.predefined import vanilla_dip
-from pydip.player.command.command import MoveCommand, SupportCommand, ConvoyMoveCommand, ConvoyTransportCommand, HoldCommand
+from pydip.player.command.command import (
+    ConvoyMoveCommand,
+    ConvoyTransportCommand,
+    HoldCommand,
+    MoveCommand,
+    SupportCommand,
+)
 from pydip.player.player import Player
 from pydip.test.command_helper import CommandType
 from pydip.turn.resolve import resolve_turn

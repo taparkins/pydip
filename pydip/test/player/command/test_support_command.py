@@ -5,6 +5,7 @@ from pydip.player.command.command import SupportCommand
 from pydip.player.player import Player
 from pydip.player.unit import UnitTypes
 
+
 def test_support_destination_not_adjacent():
     game_map = generate_map()
     starting_configuration = [
@@ -16,6 +17,7 @@ def test_support_destination_not_adjacent():
     with pytest.raises(AssertionError):
         SupportCommand(player, player.units[0], player.units[1], 'Galicia')
 
+
 def test_support_landlocked_destination_with_fleet():
     game_map = generate_map()
     starting_configuration = [
@@ -26,6 +28,7 @@ def test_support_landlocked_destination_with_fleet():
 
     with pytest.raises(AssertionError):
         SupportCommand(player, player.units[0], player.units[1], 'Budapest')
+
 
 def test_support_supported_unit_not_adjacent():
     game_map = generate_map()
@@ -41,6 +44,7 @@ def test_support_supported_unit_not_adjacent():
     assert command.supported_unit.position == 'Ruhr'
     assert command.destination == 'Burgundy'
 
+
 def test_support_supported_unit_adjacent():
     game_map = generate_map()
     starting_configuration = [
@@ -54,6 +58,7 @@ def test_support_supported_unit_adjacent():
     assert command.unit.position == 'Tuscany'
     assert command.supported_unit.position == 'Rome'
     assert command.destination == 'Venice'
+
 
 def test_support_troop_to_parent_of_coast_with_fleet():
     game_map = generate_map()
@@ -69,6 +74,7 @@ def test_support_troop_to_parent_of_coast_with_fleet():
     assert command.supported_unit.position == 'Tuscany'
     assert command.destination == 'Piedmont'
 
+
 def test_support_fleet_to_coast_with_troop():
     game_map = generate_map()
     starting_configuration = [
@@ -82,6 +88,7 @@ def test_support_fleet_to_coast_with_troop():
     assert command.unit.position == 'Finland'
     assert command.supported_unit.position == 'Baltic Sea'
     assert command.destination == 'Sweden Coast'
+
 
 def test_support_troop_on_coast_to_another_coast():
     game_map = generate_map()

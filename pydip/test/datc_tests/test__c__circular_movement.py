@@ -33,6 +33,7 @@ def test_c_1__three_army_circular_movement():
         },
     }
 
+
 def test_c_2__three_army_circular_movement_with_support():
     """
     TURKEY: F Ankara Coast -> Constantinople Coast
@@ -65,6 +66,7 @@ def test_c_2__three_army_circular_movement_with_support():
         },
     }
 
+
 def test_c_3__a_disrupted_three_army_circular_movement():
     """
     TURKEY: F Ankara Coast -> Constantinople Coast
@@ -96,6 +98,7 @@ def test_c_3__a_disrupted_three_army_circular_movement():
             Unit(UnitTypes.TROOP, 'Bulgaria'): None,
         },
     }
+
 
 def test_c_4__circular_movement_with_attacked_convoy():
     """
@@ -157,6 +160,7 @@ def test_c_4__circular_movement_with_attacked_convoy():
             Unit(UnitTypes.FLEET, 'Naples Coast'): None,
         },
     }
+
 
 def test_c_5__disrupted_circular_movement_due_to_dislodged_convoy():
     """
@@ -229,6 +233,7 @@ def test_c_5__disrupted_circular_movement_due_to_dislodged_convoy():
         },
     }
 
+
 def test_c_6__two_armies_with_two_convoys():
     """
     ENGLAND: A London -> Belgium (Convoy)
@@ -269,6 +274,7 @@ def test_c_6__two_armies_with_two_convoys():
             Unit(UnitTypes.FLEET, 'English Channel'): None,
         },
     }
+
 
 def test_c_7__disrupted_unit_swap():
     """

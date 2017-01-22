@@ -13,6 +13,7 @@ def test_empty_map():
     assert game_map.name_map == expected_name_map
     assert game_map.adjacency == expected_adjacency
 
+
 def test_singleton_map():
     territory_descriptors = [ { 'name' : 'Pacific Ocean' } ]
     adjacencies = []
@@ -23,6 +24,7 @@ def test_singleton_map():
 
     assert game_map.name_map == expected_name_map
     assert game_map.adjacency == expected_adjacency
+
 
 def test_two_connected_land_territories():
     territory_descriptors = [
@@ -43,6 +45,7 @@ def test_two_connected_land_territories():
 
     assert game_map.name_map == expected_name_map
     assert game_map.adjacency == expected_adjacency
+
 
 def test_land_territories_with_lake():
     territory_descriptors = [

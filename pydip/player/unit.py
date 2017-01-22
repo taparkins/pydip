@@ -1,8 +1,10 @@
 from enum import Enum
 
+
 class UnitTypes(Enum):
     TROOP = 0
     FLEET = 1
+
 
 class Unit:
     """ UnitType """

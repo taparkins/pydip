@@ -16,7 +16,7 @@ def test_b_1__portugal_to_north_spain_coast():
     """
     game_map = generate_map()
     france_starting_configuration = [
-        {'territory_name': 'Portugal Coast', 'unit_type': UnitTypes.FLEET},
+        { 'territory_name': 'Portugal Coast', 'unit_type': UnitTypes.FLEET },
     ]
     france = Player("France", game_map, france_starting_configuration)
 
@@ -27,6 +27,7 @@ def test_b_1__portugal_to_north_spain_coast():
     assert result == {
         'France' : { Unit(UnitTypes.FLEET, 'Spain North Coast') : None },
     }
+
 
 def test_b_1__portugal_to_south_spain_coast():
     """
@@ -49,6 +50,7 @@ def test_b_1__portugal_to_south_spain_coast():
         'France': {Unit(UnitTypes.FLEET, 'Spain South Coast'): None},
     }
 
+
 def test_b_1__portugal_to_spain_mainland_disallowed():
     """
     FRANCE: F Portugal Coast -> Spain
@@ -65,8 +67,10 @@ def test_b_1__portugal_to_spain_mainland_disallowed():
     with pytest.raises(AssertionError):
         MoveCommand(france, france.units[0], 'Spain')
 
+
 # test B.2 and B.3 are skipped, since they involve ambiguous commands which
 # cannot be reproduced in this system
+
 
 def test_b_4__support_to_unreachable_coast_allowed():
     """
@@ -102,6 +106,7 @@ def test_b_4__support_to_unreachable_coast_allowed():
         }
     }
 
+
 def test_b_5__support_from_unreachable_coast_not_allowed():
     """
     FRANCE: F Marseilles Coast -> Gulf of Lyon
@@ -116,6 +121,7 @@ def test_b_5__support_from_unreachable_coast_not_allowed():
 
     with pytest.raises(AssertionError):
         SupportCommand(france, france.units[1], france.units[0], 'Gulf of Lyon')
+
 
 def test_b_6__support_can_be_cut_from_other_coast():
     """
@@ -176,8 +182,10 @@ def test_b_6__support_can_be_cut_from_other_coast():
         }
     }
 
+
 # Test B.7, B.8, B.9, and B.10 skipped because it involves ambiguous command that
 # is not allowed in this system
+
 
 def test_b_11__coast_can_not_be_ordered_to_change():
     """
@@ -196,6 +204,7 @@ def test_b_11__coast_can_not_be_ordered_to_change():
     with pytest.raises(AssertionError):
         MoveCommand(france, france.units[0], 'Gulf of Lyon')
 
+
 def test_b_12__army_movement_with_coastal_specification():
     """
     FRANCE: A Gascony -> Spain North Coast
@@ -208,6 +217,7 @@ def test_b_12__army_movement_with_coastal_specification():
 
     with pytest.raises(AssertionError):
         MoveCommand(france, france.units[0], 'Spain North Coast')
+
 
 def test_b_13__coastal_crawl_not_allowed():
     """
@@ -232,6 +242,7 @@ def test_b_13__coastal_crawl_not_allowed():
             Unit(UnitTypes.FLEET, 'Constantinople Coast'): None,
         }
     }
+
 
 # Test B.14 is skipped because it depends on ambiguous build command which
 # is not permitted in this system

@@ -35,10 +35,17 @@ def test_h_4__no_other_moves_during_retreat():
             [
                 PlayerHelper('England', [
                     RetreatCommandHelper(RetreatCommandType.MOVE, retreat_map, UnitTypes.TROOP, 'Holland', 'Belgium'),
-                    RetreatCommandHelper(RetreatCommandType.MOVE, retreat_map, UnitTypes.FLEET, 'North Sea', 'Norwegian Sea'),
+                    RetreatCommandHelper(
+                        RetreatCommandType.MOVE,
+                        retreat_map,
+                        UnitTypes.FLEET,
+                        'North Sea',
+                        'Norwegian Sea',
+                    ),
                 ]),
             ]
         )
+
 
 def test_h_5__a_unit_may_not_retreat_to_the_area_from_which_it_is_attacked():
     helper = TurnHelper([
@@ -63,6 +70,7 @@ def test_h_5__a_unit_may_not_retreat_to_the_area_from_which_it_is_attacked():
             },
         },
     }
+
 
 def test_h_6__unit_may_not_retreat_to_a_contested_area():
     helper = TurnHelper([
@@ -96,6 +104,7 @@ def test_h_6__unit_may_not_retreat_to_a_contested_area():
             },
         },
     }
+
 
 def test_h_7__multiple_retreat_to_same_area_will_disband_units():
     retreat_map = {
@@ -135,6 +144,7 @@ def test_h_7__multiple_retreat_to_same_area_will_disband_units():
         'Italy' : set(),
     }
 
+
 def test_h_8__triple_retreat_to_same_area_will_disband_units():
     retreat_map = {
         'England': {
@@ -169,11 +179,29 @@ def test_h_8__triple_retreat_to_same_area_will_disband_units():
         retreat_map,
         [
             PlayerHelper('England', [
-                RetreatCommandHelper(RetreatCommandType.MOVE, retreat_map, UnitTypes.FLEET, 'Norway Coast', 'North Sea'),
+                RetreatCommandHelper(
+                    RetreatCommandType.MOVE,
+                    retreat_map,
+                    UnitTypes.FLEET,
+                    'Norway Coast',
+                    'North Sea',
+                ),
             ]),
             PlayerHelper('Russia', [
-                RetreatCommandHelper(RetreatCommandType.MOVE, retreat_map, UnitTypes.FLEET, 'Edinburgh Coast', 'North Sea'),
-                RetreatCommandHelper(RetreatCommandType.MOVE, retreat_map, UnitTypes.FLEET, 'Holland Coast', 'North Sea'),
+                RetreatCommandHelper(
+                    RetreatCommandType.MOVE,
+                    retreat_map,
+                    UnitTypes.FLEET,
+                    'Edinburgh Coast',
+                    'North Sea',
+                ),
+                RetreatCommandHelper(
+                    RetreatCommandType.MOVE,
+                    retreat_map,
+                    UnitTypes.FLEET,
+                    'Holland Coast',
+                    'North Sea',
+                ),
             ]),
         ]
     )
@@ -184,6 +212,7 @@ def test_h_8__triple_retreat_to_same_area_will_disband_units():
         'Germany' : { Unit(UnitTypes.TROOP, 'Holland'), Unit(UnitTypes.TROOP, 'Kiel') },
         'Russia'  : { Unit(UnitTypes.TROOP, 'Norway'), Unit(UnitTypes.TROOP, 'Sweden') },
     }
+
 
 def test_h_9__dislodged_unit_will_not_make_attackers_area_contested():
     helper = TurnHelper([
@@ -224,6 +253,7 @@ def test_h_9__dislodged_unit_will_not_make_attackers_area_contested():
         },
     }
 
+
 def test_h_10__not_retreating_to_attacker_does_not_mean_contested():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -263,14 +293,21 @@ def test_h_10__not_retreating_to_attacker_does_not_mean_contested():
         },
     }
 
+
 def test_h_11__retreat_when_dislodged_by_adjacent_convoy():
     helper = TurnHelper([
         PlayerHelper('France', [
             CommandHelper(CommandType.CONVOY_MOVE, UnitTypes.TROOP, 'Gascony', 'Marseilles'),
             CommandHelper(CommandType.CONVOY_TRANSPORT, UnitTypes.FLEET, 'Mid-Atlantic Ocean', 'Gascony', 'Marseilles'),
-            CommandHelper(CommandType.CONVOY_TRANSPORT, UnitTypes.FLEET, 'Western Mediterranean Sea', 'Gascony', 'Marseilles'),
             CommandHelper(CommandType.CONVOY_TRANSPORT, UnitTypes.FLEET, 'Gulf of Lyon', 'Gascony', 'Marseilles'),
             CommandHelper(CommandType.SUPPORT, UnitTypes.TROOP, 'Burgundy', 'Gascony', 'Marseilles'),
+            CommandHelper(
+                CommandType.CONVOY_TRANSPORT,
+                UnitTypes.FLEET,
+                'Western Mediterranean Sea',
+                'Gascony',
+                'Marseilles',
+            ),
         ]),
         PlayerHelper('Italy', [
             CommandHelper(CommandType.HOLD, UnitTypes.TROOP, 'Marseilles'),
@@ -295,6 +332,7 @@ def test_h_11__retreat_when_dislodged_by_adjacent_convoy():
         },
     }
 
+
 def test_h_12__retreat_when_dislodged_by_adjacent_convoy_while_trying_to_do_the_same():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -310,8 +348,14 @@ def test_h_12__retreat_when_dislodged_by_adjacent_convoy_while_trying_to_do_the_
         PlayerHelper('Russia', [
             CommandHelper(CommandType.CONVOY_MOVE, UnitTypes.TROOP, 'Edinburgh', 'Liverpool'),
             CommandHelper(CommandType.CONVOY_TRANSPORT, UnitTypes.FLEET, 'Norwegian Sea', 'Edinburgh', 'Liverpool'),
-            CommandHelper(CommandType.CONVOY_TRANSPORT, UnitTypes.FLEET, 'North Atlantic Ocean', 'Edinburgh', 'Liverpool'),
             CommandHelper(CommandType.SUPPORT, UnitTypes.TROOP, 'Clyde', 'Edinburgh', 'Liverpool'),
+            CommandHelper(
+                CommandType.CONVOY_TRANSPORT,
+                UnitTypes.FLEET,
+                'North Atlantic Ocean',
+                'Edinburgh',
+                'Liverpool',
+            ),
         ]),
     ])
 
@@ -344,6 +388,7 @@ def test_h_12__retreat_when_dislodged_by_adjacent_convoy_while_trying_to_do_the_
         },
     }
 
+
 def test_h_13__no_retreat_with_convoy_in_main_phase():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -371,9 +416,11 @@ def test_h_13__no_retreat_with_convoy_in_main_phase():
         },
     }
 
+
 # Test H.14 is skipped, because it is about ensuring context from the main
 # phase does not leak to the retreat phase. That notion is incompatible with
 # this system, and makes the test superfluous and verbose
+
 
 def test_h_15__no_coastal_crawl_in_retreat():
     helper = TurnHelper([
@@ -382,7 +429,13 @@ def test_h_15__no_coastal_crawl_in_retreat():
         ]),
         PlayerHelper('France', [
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Spain South Coast', 'Portugal Coast'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Mid-Atlantic Ocean', 'Spain South Coast', 'Portugal Coast'),
+            CommandHelper(
+                CommandType.SUPPORT,
+                UnitTypes.FLEET,
+                'Mid-Atlantic Ocean',
+                'Spain South Coast',
+                'Portugal Coast',
+            ),
         ]),
     ])
 
@@ -397,6 +450,7 @@ def test_h_15__no_coastal_crawl_in_retreat():
         },
     }
 
+
 def test_h_16__contested_for_both_coasts():
     helper = TurnHelper([
         PlayerHelper('France', [
@@ -406,7 +460,13 @@ def test_h_16__contested_for_both_coasts():
         ]),
         PlayerHelper('Italy', [
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Tyrrhenian Sea', 'Western Mediterranean Sea'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Tunis Coast', 'Tyrrhenian Sea', 'Western Mediterranean Sea'),
+            CommandHelper(
+                CommandType.SUPPORT,
+                UnitTypes.FLEET,
+                'Tunis Coast',
+                'Tyrrhenian Sea',
+                'Western Mediterranean Sea',
+            ),
         ]),
     ])
 

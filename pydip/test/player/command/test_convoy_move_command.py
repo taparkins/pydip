@@ -5,6 +5,7 @@ from pydip.player.command.command import ConvoyMoveCommand
 from pydip.player.player import Player
 from pydip.player.unit import UnitTypes
 
+
 def test_convoy_move_fails_for_fleet():
     game_map = generate_map()
     starting_configuration = [
@@ -14,6 +15,7 @@ def test_convoy_move_fails_for_fleet():
 
     with pytest.raises(AssertionError):
         ConvoyMoveCommand(player, player.units[0], 'Sweden Coast')
+
 
 def test_convoy_move_fails_for_landlocked_destination():
     game_map = generate_map()
@@ -25,6 +27,7 @@ def test_convoy_move_fails_for_landlocked_destination():
     with pytest.raises(AssertionError):
         ConvoyMoveCommand(player, player.units[0], 'Paris')
 
+
 def test_convoy_move_fails_for_landlocked_origin():
     game_map = generate_map()
     starting_configuration = [
@@ -34,6 +37,7 @@ def test_convoy_move_fails_for_landlocked_origin():
 
     with pytest.raises(AssertionError):
         ConvoyMoveCommand(player, player.units[0], 'London')
+
 
 def test_convoy_move_success():
     game_map = generate_map()

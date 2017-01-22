@@ -24,6 +24,7 @@ def test_a_1__check_move_to_non_neighboring_territory_fails():
     with pytest.raises(AssertionError):
         MoveCommand(player, player.units[0], 'Picardy Coast')
 
+
 def test_a_2__check_army_to_sea_territory_fails():
     """ ENGLAND: A Liverpool -> Irish Sea """
     game_map = generate_map()
@@ -34,6 +35,7 @@ def test_a_2__check_army_to_sea_territory_fails():
 
     with pytest.raises(AssertionError):
         MoveCommand(player, player.units[0], 'Irish Sea')
+
 
 def test_a_3__check_fleet_to_land_territory_fails():
     """ GERMANY: F Kiel Coast -> Munich """
@@ -46,6 +48,7 @@ def test_a_3__check_fleet_to_land_territory_fails():
     with pytest.raises(AssertionError):
         MoveCommand(player, player.units[0], 'Munich')
 
+
 def test_a_4__check_move_to_same_territory():
     """ GERMANY: F Kiel Coast -> Kiel Coast """
     # We treat this as identical to a Hold command
@@ -57,6 +60,7 @@ def test_a_4__check_move_to_same_territory():
 
     move = MoveCommand(player, player.units[0], 'Kiel Coast')
     assert move == HoldCommand(player, player.units[0])
+
 
 def test_a_5__check_convoy_to_same_territory_fails():
     """
@@ -75,6 +79,7 @@ def test_a_5__check_convoy_to_same_territory_fails():
         ConvoyMoveCommand(player, player.units[0], 'Yorkshire')
     with pytest.raises(AssertionError):
         ConvoyTransportCommand(player, player.units[1], player.units[0], 'Yorkshire')
+
 
 def test_a_6__check_player_cannot_command_other_players_units():
     """
@@ -107,6 +112,7 @@ def test_a_6__check_player_cannot_command_other_players_units():
     with pytest.raises(AssertionError):
         ConvoyTransportCommand(germany, england.units[3], england.units[2], 'Picardy')
 
+
 def test_a_7__fleet_cannot_be_convoyed():
     """
     ENGLAND: F Convoy London Coast -> Belgium Coast
@@ -124,6 +130,7 @@ def test_a_7__fleet_cannot_be_convoyed():
     with pytest.raises(AssertionError):
         ConvoyTransportCommand(player, player.units[1], player.units[0], 'Belgium Coast')
 
+
 def test_a_8__check_unit_cannot_support_itself():
     """ FRANCE: F Trieste Coast Support Trieste Coast Hold """
     # Modified from original check: this command is considered illegal, so no resolution check is made
@@ -136,6 +143,7 @@ def test_a_8__check_unit_cannot_support_itself():
     with pytest.raises(AssertionError):
         SupportCommand(player, player.units[0], player.units[0], 'Trieste')
 
+
 def test_a_9__fleets_must_follow_coastlines():
     """ ITALY: F Rome Coast -> Venice Coast """
     game_map = generate_map()
@@ -146,6 +154,7 @@ def test_a_9__fleets_must_follow_coastlines():
 
     with pytest.raises(AssertionError):
         MoveCommand(player, player.units[0], 'Venice Coast')
+
 
 def test_a_10__support_of_unreachable_destination_fails():
     """ ITALY: F Rome Coast Support Apulia -> Venice """
@@ -158,6 +167,7 @@ def test_a_10__support_of_unreachable_destination_fails():
 
     with pytest.raises(AssertionError):
         SupportCommand(player, player.units[0], player.units[1], 'Venice')
+
 
 def test_a_11__simple_bounce():
     """
@@ -184,6 +194,7 @@ def test_a_11__simple_bounce():
         'Austria' : { Unit(UnitTypes.TROOP, 'Vienna') : None },
         'Italy'   : { Unit(UnitTypes.TROOP, 'Venice') : None },
     }
+
 
 def test_a_12__three_unit_bounce():
     """

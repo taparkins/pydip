@@ -33,7 +33,12 @@ class AdjustmentHelper:
         return resolve_adjustment(self.ownership_map, self.adjustment_counts, self.player_units, self.commands)
 
     def resolve__validated(self):
-        return resolve_adjustment__validated(self.ownership_map, self.adjustment_counts, self.player_units, self.commands)
+        return resolve_adjustment__validated(
+            self.ownership_map,
+            self.adjustment_counts,
+            self.player_units,
+            self.commands,
+        )
 
     def _build_commands(self, player_helpers):
         commands = []
@@ -50,6 +55,7 @@ class AdjustmentHelper:
         if command.type == AdjustmentCommandType.DISBAND:
             return AdjustmentDisbandCommand(player, unit)
         raise ValueError("Invalid command type: {}".format(command.type))
+
 
 def _get_starting_configuration(units):
     return [

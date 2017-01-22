@@ -4,6 +4,7 @@ from pydip.player.unit import UnitTypes, Unit
 from pydip.player.player import Player
 from pydip.map.predefined.vanilla_dip import generate_map
 
+
 def test_player_with_no_starting_position():
     game_map = generate_map()
     starting_configuration = []
@@ -11,6 +12,7 @@ def test_player_with_no_starting_position():
 
     assert player.starting_territories == set()
     assert player.units == []
+
 
 def test_player_with_one_starting_position_without_unit():
     game_map = generate_map()
@@ -22,6 +24,7 @@ def test_player_with_one_starting_position_without_unit():
     assert player.starting_territories == { 'Sevastopol' }
     assert player.units == []
 
+
 def test_player_with_one_starting_position_with_unit():
     game_map = generate_map()
     starting_configuration = [
@@ -32,6 +35,7 @@ def test_player_with_one_starting_position_with_unit():
     assert player.starting_territories == { 'Sevastopol' }
     assert player.units == [ Unit(UnitTypes.TROOP, 'Sevastopol') ]
 
+
 def test_player_invalid_for_troop_on_sea():
     game_map = generate_map()
     starting_configuration = [
@@ -39,6 +43,7 @@ def test_player_invalid_for_troop_on_sea():
     ]
     with pytest.raises(AssertionError):
         Player("test player", game_map, starting_configuration)
+
 
 def test_player_invalid_for_troop_on_coast():
     game_map = generate_map()
@@ -48,6 +53,7 @@ def test_player_invalid_for_troop_on_coast():
     with pytest.raises(AssertionError):
         Player("test player", game_map, starting_configuration)
 
+
 def test_player_invalid_for_fleet_on_land():
     game_map = generate_map()
     starting_configuration = [
@@ -56,6 +62,7 @@ def test_player_invalid_for_fleet_on_land():
     with pytest.raises(AssertionError):
         Player("test player", game_map, starting_configuration)
 
+
 def test_player_invalid_for_invalid_starting_territory():
     game_map = generate_map()
     starting_configuration = [
@@ -63,6 +70,7 @@ def test_player_invalid_for_invalid_starting_territory():
     ]
     with pytest.raises(AssertionError):
         Player("test player", game_map, starting_configuration)
+
 
 def test_player_with_coastal_starting_position_labeled_as_parent():
     game_map = generate_map()
@@ -73,6 +81,7 @@ def test_player_with_coastal_starting_position_labeled_as_parent():
 
     assert player.starting_territories == { 'Sevastopol' }
     assert player.units == [ Unit(UnitTypes.FLEET, 'Sevastopol Coast') ]
+
 
 def test_player_multiple_starting_territories():
     game_map = generate_map()

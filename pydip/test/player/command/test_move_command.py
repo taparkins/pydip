@@ -5,6 +5,7 @@ from pydip.player.command.command import HoldCommand, MoveCommand
 from pydip.player.player import Player
 from pydip.player.unit import UnitTypes
 
+
 def test_move_not_adjacent():
     game_map = generate_map()
     starting_configuration = [
@@ -15,6 +16,7 @@ def test_move_not_adjacent():
     with pytest.raises(AssertionError):
         MoveCommand(player, player.units[0], 'Sevastopol')
 
+
 def test_move_wrong_type():
     game_map = generate_map()
     starting_configuration = [
@@ -24,6 +26,7 @@ def test_move_wrong_type():
 
     with pytest.raises(AssertionError):
         MoveCommand(player, player.units[0], 'Moscow')
+
 
 def test_move_land_to_land():
     game_map = generate_map()
@@ -37,6 +40,7 @@ def test_move_land_to_land():
     assert command.unit.position == 'Paris'
     assert command.destination == 'Brest'
 
+
 def test_move_sea_to_sea():
     game_map = generate_map()
     starting_configuration = [
@@ -48,6 +52,7 @@ def test_move_sea_to_sea():
 
     assert command.unit.position == 'North Sea'
     assert command.destination == 'Norwegian Sea'
+
 
 def test_move_sea_to_coast():
     game_map = generate_map()
@@ -61,6 +66,7 @@ def test_move_sea_to_coast():
     assert command.unit.position == 'Adriatic Sea'
     assert command.destination == 'Trieste Coast'
 
+
 def test_move_coast_to_coast():
     game_map = generate_map()
     starting_configuration = [
@@ -72,6 +78,7 @@ def test_move_coast_to_coast():
 
     assert command.unit.position == 'Spain North Coast'
     assert command.destination == 'Portugal Coast'
+
 
 def test_hold():
     game_map = generate_map()

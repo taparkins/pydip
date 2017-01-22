@@ -25,6 +25,7 @@ def test_f_1__dislodged_unit_has_no_effect_on_attackers_area():
     with pytest.raises(AssertionError):
         ConvoyTransportCommand(turkey, turkey.units[1], turkey.units[0], 'Sevastopol')
 
+
 def test_f_2__convoys_can_bounce_as_normal():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -46,6 +47,7 @@ def test_f_2__convoys_can_bounce_as_normal():
             Unit(UnitTypes.TROOP, 'Paris'): None,
         },
     }
+
 
 def test_f_3__an_army_being_convoyed_can_receive_support():
     helper = TurnHelper([
@@ -71,6 +73,7 @@ def test_f_3__an_army_being_convoyed_can_receive_support():
         },
     }
 
+
 def test_f_4__an_attacked_convoy_is_not_disrupted():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -92,6 +95,7 @@ def test_f_4__an_attacked_convoy_is_not_disrupted():
             Unit(UnitTypes.FLEET, 'Skagerrak'): None,
         },
     }
+
 
 def test_f_5__a_beleaguered_convoy_is_not_disrupted():
     helper = TurnHelper([
@@ -124,6 +128,7 @@ def test_f_5__a_beleaguered_convoy_is_not_disrupted():
             Unit(UnitTypes.FLEET, 'Denmark Coast'): None,
         },
     }
+
 
 def test_f_6__dislodged_convoy_does_not_cut_support():
     helper = TurnHelper([
@@ -168,6 +173,7 @@ def test_f_6__dislodged_convoy_does_not_cut_support():
         },
     }
 
+
 def test_f_7__dislodged_convoy_does_not_cause_contested_area():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -200,6 +206,7 @@ def test_f_7__dislodged_convoy_does_not_cause_contested_area():
             Unit(UnitTypes.FLEET, 'Helgoland Bight'): None,
         },
     }
+
 
 def test_f_8__dislodged_convoy_does_not_cause_a_bounce():
     helper = TurnHelper([
@@ -235,6 +242,7 @@ def test_f_8__dislodged_convoy_does_not_cause_a_bounce():
         },
     }
 
+
 def test_f_9__dislodge_of_multi_route_convoy():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -265,6 +273,7 @@ def test_f_9__dislodge_of_multi_route_convoy():
             Unit(UnitTypes.FLEET, 'Brest Coast'): None,
         },
     }
+
 
 def test_f_10__dislodge_of_multi_route_convoy_with_foreign_fleet():
     helper = TurnHelper([
@@ -300,6 +309,7 @@ def test_f_10__dislodge_of_multi_route_convoy_with_foreign_fleet():
             Unit(UnitTypes.FLEET, 'Brest Coast'): None,
         },
     }
+
 
 def test_f_11__dislodge_of_multi_route_convoy_with_only_foreign_fleets():
     helper = TurnHelper([
@@ -340,6 +350,7 @@ def test_f_11__dislodge_of_multi_route_convoy_with_only_foreign_fleets():
         },
     }
 
+
 def test_f_12__dislodged_convoying_fleet_not_on_route():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -349,7 +360,13 @@ def test_f_12__dislodged_convoying_fleet_not_on_route():
         ]),
         PlayerHelper('France', [
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Mid-Atlantic Ocean', 'Irish Sea'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'North Atlantic Ocean', 'Mid-Atlantic Ocean', 'Irish Sea'),
+            CommandHelper(
+                CommandType.SUPPORT,
+                UnitTypes.FLEET,
+                'North Atlantic Ocean',
+                'Mid-Atlantic Ocean',
+                'Irish Sea',
+            ),
         ])
     ])
     result = helper.resolve()
@@ -368,6 +385,7 @@ def test_f_12__dislodged_convoying_fleet_not_on_route():
             Unit(UnitTypes.FLEET, 'North Atlantic Ocean'): None,
         },
     }
+
 
 def test_f_13__the_unwanted_alternative():
     helper = TurnHelper([
@@ -406,6 +424,7 @@ def test_f_13__the_unwanted_alternative():
         },
     }
 
+
 def test_f_14__simple_convoy_paradox():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -434,6 +453,7 @@ def test_f_14__simple_convoy_paradox():
             },
         },
     }
+
 
 def test_f_15__simple_convoy_paradox_with_additional_convoy():
     helper = TurnHelper([
@@ -472,6 +492,7 @@ def test_f_15__simple_convoy_paradox_with_additional_convoy():
         },
     }
 
+
 def test_f_16__pandins_paradox():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -502,6 +523,7 @@ def test_f_16__pandins_paradox():
             Unit(UnitTypes.FLEET, 'North Sea'): None,
         },
     }
+
 
 def test_f_17__pandins_extended_paradox():
     helper = TurnHelper([
@@ -536,6 +558,7 @@ def test_f_17__pandins_extended_paradox():
         },
     }
 
+
 def test_f_18__betrayal_paradox():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -567,6 +590,7 @@ def test_f_18__betrayal_paradox():
         },
     }
 
+
 def test_f_19__multi_route_convoy_disruption_paradox():
     helper = TurnHelper([
         PlayerHelper('France', [
@@ -592,6 +616,7 @@ def test_f_19__multi_route_convoy_disruption_paradox():
         },
     }
 
+
 def test_f_20__unwanted_multi_route_convoy_paradox():
     helper = TurnHelper([
         PlayerHelper('France', [
@@ -604,7 +629,13 @@ def test_f_20__unwanted_multi_route_convoy_paradox():
         ]),
         PlayerHelper('Turkey', [
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Eastern Mediterranean Sea', 'Ionian Sea'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Aegean Sea', 'Eastern Mediterranean Sea', 'Ionian Sea'),
+            CommandHelper(
+                CommandType.SUPPORT,
+                UnitTypes.FLEET,
+                'Aegean Sea',
+                'Eastern Mediterranean Sea',
+                'Ionian Sea'
+            ),
         ])
     ])
     result = helper.resolve()
@@ -628,6 +659,7 @@ def test_f_20__unwanted_multi_route_convoy_paradox():
         },
     }
 
+
 def test_f_21__dads_army_convoy():
     helper = TurnHelper([
         PlayerHelper('Russia', [
@@ -637,12 +669,24 @@ def test_f_21__dads_army_convoy():
         ]),
         PlayerHelper('France', [
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Mid-Atlantic Ocean', 'North Atlantic Ocean'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Irish Sea', 'Mid-Atlantic Ocean', 'North Atlantic Ocean'),
+            CommandHelper(
+                CommandType.SUPPORT,
+                UnitTypes.FLEET,
+                'Irish Sea',
+                'Mid-Atlantic Ocean',
+                'North Atlantic Ocean',
+            ),
         ]),
         PlayerHelper('England', [
             CommandHelper(CommandType.CONVOY_MOVE, UnitTypes.TROOP, 'Liverpool', 'Clyde'),
             CommandHelper(CommandType.CONVOY_TRANSPORT, UnitTypes.FLEET, 'North Atlantic Ocean', 'Liverpool', 'Clyde'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Clyde Coast', 'North Atlantic Ocean', 'North Atlantic Ocean'),
+            CommandHelper(
+                CommandType.SUPPORT,
+                UnitTypes.FLEET,
+                'Clyde Coast',
+                'North Atlantic Ocean',
+                'North Atlantic Ocean',
+            ),
         ])
     ])
     result = helper.resolve()
@@ -662,6 +706,7 @@ def test_f_21__dads_army_convoy():
             Unit(UnitTypes.FLEET, 'Clyde Coast'): set(),
         },
     }
+
 
 def test_f_22__second_order_paradox_with_two_resolutions():
     helper = TurnHelper([
@@ -713,6 +758,7 @@ def test_f_22__second_order_paradox_with_two_resolutions():
         },
     }
 
+
 def test_f_23__second_order_paradox_with_two_exclusive_convoys():
     helper = TurnHelper([
         PlayerHelper('England', [
@@ -759,6 +805,7 @@ def test_f_23__second_order_paradox_with_two_exclusive_convoys():
             Unit(UnitTypes.FLEET, 'North Sea'): None,
         },
     }
+
 
 def test_f_24__second_order_paradox_with_no_resolution():
     helper = TurnHelper([

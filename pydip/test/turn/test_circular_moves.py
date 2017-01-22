@@ -3,6 +3,7 @@ from pydip.test.command_helper import CommandType, CommandHelper
 from pydip.test.player_helper import PlayerHelper
 from pydip.test.turn_helper import TurnHelper
 
+
 def test_three_country_rotation():
     helper = TurnHelper([
         PlayerHelper('Germany', [
@@ -28,6 +29,7 @@ def test_three_country_rotation():
             Unit(UnitTypes.TROOP, 'Galicia'): None,
         },
     }
+
 
 def test_three_country_rotation_with_one_move_supported():
     helper = TurnHelper([
@@ -56,6 +58,7 @@ def test_three_country_rotation_with_one_move_supported():
             Unit(UnitTypes.TROOP, 'Galicia'): None,
         },
     }
+
 
 def test_three_country_rotation_with_one_support_each():
     helper = TurnHelper([
@@ -89,6 +92,7 @@ def test_three_country_rotation_with_one_support_each():
         },
     }
 
+
 def test_three_country_rotation_with_external_disruption():
     helper = TurnHelper([
         PlayerHelper('Germany', [
@@ -120,6 +124,7 @@ def test_three_country_rotation_with_external_disruption():
             Unit(UnitTypes.TROOP, 'Ukraine'): None,
         },
     }
+
 
 def test_three_country_rotation_with_external_dislodge():
     helper = TurnHelper([
@@ -158,6 +163,7 @@ def test_three_country_rotation_with_external_dislodge():
             Unit(UnitTypes.TROOP, 'Warsaw'): None,
         },
     }
+
 
 def test_three_country_rotation_with_external_disruption_overcome_by_support():
     helper = TurnHelper([

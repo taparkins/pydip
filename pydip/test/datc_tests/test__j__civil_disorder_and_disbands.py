@@ -42,6 +42,7 @@ def test_j_1a__too_many_remove_orders__validated():
     with pytest.raises(AssertionError):
         helper.resolve__validated()
 
+
 def test_j_1b__too_many_remove_orders__not_validated():
     """
     This test has been modified from the DATC -- it includes a disband of a unit that does not exist,
@@ -113,6 +114,7 @@ def test_j_2a__removing_the_same_unit_twice__validated():
     with pytest.raises(AssertionError):
         helper.resolve__validated()
 
+
 def test_j_2b__removing_the_same_unit_twice__not_validated():
     # France has lost one territory to England and one to Germany, all other players have stayed still
     player_units = vanilla_dip.generate_starting_player_units()
@@ -150,6 +152,7 @@ def test_j_2b__removing_the_same_unit_twice__not_validated():
     }
     assert results == expected_results
 
+
 def test_j_3a__civil_disorder_two_armies_with_different_distance__validated():
     # Russia has lost a territory to Germany and a territory to Turkey, all other units stay put
     player_units = vanilla_dip.generate_starting_player_units()
@@ -177,6 +180,7 @@ def test_j_3a__civil_disorder_two_armies_with_different_distance__validated():
 
     with pytest.raises(AssertionError):
         helper.resolve__validated()
+
 
 def test_j_3b__civil_disorder_two_armies_with_different_distance__not_validated():
     # Russia has lost a territory to Germany and a territory to Turkey, all other units stay put
@@ -212,5 +216,5 @@ def test_j_3b__civil_disorder_two_armies_with_different_distance__not_validated(
     }
     assert results == expected_results
 
-# Tests J.4-J.11 are skipped, since they are functionally equivalent to J.3 in our system
 
+# Tests J.4-J.11 are skipped, since they are functionally equivalent to J.3 in our system

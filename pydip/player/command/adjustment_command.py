@@ -6,6 +6,7 @@ class AdjustmentCommand:
         self.player = player
         self.unit = unit
 
+
 class AdjustmentDisbandCommand(AdjustmentCommand):
     def __init__(self, player, unit):
         super().__init__(player, unit)
@@ -24,6 +25,7 @@ class AdjustmentDisbandCommand(AdjustmentCommand):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
 
 class AdjustmentCreateCommand(AdjustmentCommand):
     """

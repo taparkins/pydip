@@ -2,6 +2,7 @@ import pytest
 
 from pydip.map.territory import LandTerritory, SeaTerritory, CoastTerritory
 
+
 def test_coast_needs_land_parent():
     bad_parent = SeaTerritory('Black Sea')
     good_parent = LandTerritory('Sevastopol', ['Sevastopol Coast'])

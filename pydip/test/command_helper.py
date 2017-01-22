@@ -8,6 +8,7 @@ class CommandType(Enum):
     CONVOY_TRANSPORT = 3
     HOLD = 5
 
+
 class CommandHelper:
     """ CommandType, indicating type for command """
     command_type = None
@@ -59,6 +60,7 @@ class RetreatCommandType(Enum):
     MOVE = 0
     DISBAND = 1
 
+
 class RetreatCommandHelper:
     """ RetreatCommandType, indicating type for command """
     command_type = None
@@ -90,6 +92,7 @@ class RetreatCommandHelper:
 class AdjustmentCommandType(Enum):
     CREATE = 0
     DISBAND = 1
+
 
 class AdjustmentCommandHelper:
     """ AdjustmentCommandType, indicating type for command """

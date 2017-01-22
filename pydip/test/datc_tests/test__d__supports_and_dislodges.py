@@ -33,6 +33,7 @@ def test_d_1__supported_hold_can_prevent_dislodgement():
         },
     }
 
+
 def test_d_2__move_cuts_support_on_hold():
     helper = TurnHelper([
         PlayerHelper('Austria', [
@@ -64,6 +65,7 @@ def test_d_2__move_cuts_support_on_hold():
         },
     }
 
+
 def test_d_3__move_cuts_support_on_move():
     helper = TurnHelper([
         PlayerHelper('Austria', [
@@ -88,6 +90,7 @@ def test_d_3__move_cuts_support_on_move():
         },
     }
 
+
 def test_d_4__support_to_hold_unit_supporting_hold_allowed():
     helper = TurnHelper([
         PlayerHelper('Germany', [
@@ -111,6 +114,7 @@ def test_d_4__support_to_hold_unit_supporting_hold_allowed():
             Unit(UnitTypes.FLEET, 'Baltic Sea'): None,
         },
     }
+
 
 def test_d_5__support_to_hold_unit_supporting_move_allowed():
     helper = TurnHelper([
@@ -138,6 +142,7 @@ def test_d_5__support_to_hold_unit_supporting_move_allowed():
         },
     }
 
+
 def test_d_6__support_to_hold_on_convoying_unit_allowed():
     helper = TurnHelper([
         PlayerHelper('Germany', [
@@ -163,6 +168,7 @@ def test_d_6__support_to_hold_on_convoying_unit_allowed():
             Unit(UnitTypes.FLEET, 'Gulf of Bothnia'): None,
         },
     }
+
 
 def test_d_7__support_to_hold_on_moving_unit_not_allowed():
     helper = TurnHelper([
@@ -194,6 +200,7 @@ def test_d_7__support_to_hold_on_moving_unit_not_allowed():
         },
     }
 
+
 def test_d_8__failed_convoy_cannot_receive_hold_support():
     helper = TurnHelper([
         PlayerHelper('Austria', [
@@ -217,6 +224,7 @@ def test_d_8__failed_convoy_cannot_receive_hold_support():
             Unit(UnitTypes.TROOP, 'Bulgaria'): None,
         },
     }
+
 
 def test_d_9__support_to_move_on_holding_unit_not_allowed():
     helper = TurnHelper([
@@ -246,6 +254,7 @@ def test_d_9__support_to_move_on_holding_unit_not_allowed():
         },
     }
 
+
 def test_d_10__self_dislodgement_prohibited():
     helper = TurnHelper([
         PlayerHelper('Germany', [
@@ -263,6 +272,7 @@ def test_d_10__self_dislodgement_prohibited():
             Unit(UnitTypes.TROOP, 'Munich'): None,
         },
     }
+
 
 def test_d_11__no_self_dislodgement_of_returning_unit():
     helper = TurnHelper([
@@ -288,6 +298,7 @@ def test_d_11__no_self_dislodgement_of_returning_unit():
         },
     }
 
+
 def test_d_12__supporing_foreign_unit_to_dislodge_own_unit_prohibited():
     helper = TurnHelper([
         PlayerHelper('Austria', [
@@ -309,6 +320,7 @@ def test_d_12__supporing_foreign_unit_to_dislodge_own_unit_prohibited():
             Unit(UnitTypes.TROOP, 'Venice'): None,
         },
     }
+
 
 def test_d_13__supporing_foreign_unit_to_dislodge_returning_own_unit_prohibited():
     helper = TurnHelper([
@@ -333,6 +345,7 @@ def test_d_13__supporing_foreign_unit_to_dislodge_returning_own_unit_prohibited(
             Unit(UnitTypes.FLEET, 'Apulia Coast'): None,
         },
     }
+
 
 def test_d_14__supporing_foreign_unit_not_enough_to_prevent_dislodgement():
     helper = TurnHelper([
@@ -362,6 +375,7 @@ def test_d_14__supporing_foreign_unit_not_enough_to_prevent_dislodgement():
         },
     }
 
+
 def test_d_15__defender_cannot_cut_support_for_attack_on_itself():
     helper = TurnHelper([
         PlayerHelper('Russia', [
@@ -385,6 +399,7 @@ def test_d_15__defender_cannot_cut_support_for_attack_on_itself():
             },
         },
     }
+
 
 def test_d_16__convoying_a_unit_dislodging_a_unit_of_same_power_is_allowed():
     helper = TurnHelper([
@@ -412,6 +427,7 @@ def test_d_16__convoying_a_unit_dislodging_a_unit_of_same_power_is_allowed():
             Unit(UnitTypes.TROOP, 'London'): None,
         },
     }
+
 
 def test_d_17__dislodgement_cuts_supports():
     helper = TurnHelper([
@@ -443,12 +459,19 @@ def test_d_17__dislodgement_cuts_supports():
         },
     }
 
+
 def test_d_18__a_surviving_unit_will_sustain_support():
     helper = TurnHelper([
         PlayerHelper('Russia', [
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Black Sea', 'Ankara Coast'),
             CommandHelper(CommandType.SUPPORT, UnitTypes.FLEET, 'Constantinople Coast', 'Black Sea', 'Ankara Coast'),
-            CommandHelper(CommandType.SUPPORT, UnitTypes.TROOP, 'Bulgaria', 'Constantinople Coast', 'Constantinople Coast'),
+            CommandHelper(
+                CommandType.SUPPORT,
+                UnitTypes.TROOP,
+                'Bulgaria',
+                'Constantinople Coast',
+                'Constantinople Coast',
+            ),
         ]),
         PlayerHelper('Turkey', [
             CommandHelper(CommandType.MOVE, UnitTypes.FLEET, 'Ankara Coast', 'Constantinople Coast'),
@@ -470,6 +493,7 @@ def test_d_18__a_surviving_unit_will_sustain_support():
             Unit(UnitTypes.TROOP, 'Armenia'): None,
         },
     }
+
 
 def test_d_19__even_when_surviving_is_an_alternative_way():
     helper = TurnHelper([
@@ -496,6 +520,7 @@ def test_d_19__even_when_surviving_is_an_alternative_way():
             },
         },
     }
+
 
 def test_d_20__unit_cannot_cut_support_of_own_country():
     helper = TurnHelper([
@@ -527,6 +552,7 @@ def test_d_20__unit_cannot_cut_support_of_own_country():
             },
         },
     }
+
 
 def test_d_21__dislodging_does_not_cancel_support_cut():
     helper = TurnHelper([
@@ -569,6 +595,7 @@ def test_d_21__dislodging_does_not_cancel_support_cut():
         },
     }
 
+
 def test_d_22__impossible_fleet_move_cannot_be_supported():
     """
     Adapted from DATC test, because the DATC test requires illegal moves to be
@@ -583,6 +610,7 @@ def test_d_22__impossible_fleet_move_cannot_be_supported():
 
     with pytest.raises(AssertionError):
         SupportCommand(germany, germany.units[1], germany.units[0], 'Munich')
+
 
 def test_d_23__impossible_coast_move_can_not_be_supported():
     """
@@ -599,6 +627,7 @@ def test_d_23__impossible_coast_move_can_not_be_supported():
     with pytest.raises(AssertionError):
         SupportCommand(france, france.units[1], france.units[0], 'Gulf of Lyon')
 
+
 def test_d_24__impossible_army_move_cannot_be_supported():
     """
     Adapted from DATC test, because the DATC test requires illegal moves to be
@@ -613,6 +642,7 @@ def test_d_24__impossible_army_move_cannot_be_supported():
 
     with pytest.raises(AssertionError):
         SupportCommand(france, france.units[1], france.units[0], 'Gulf of Lyon')
+
 
 def test_d_25__impossible_army_move_cannot_be_supported():
     helper = TurnHelper([
@@ -638,6 +668,7 @@ def test_d_25__impossible_army_move_cannot_be_supported():
         },
     }
 
+
 def test_d_26__failing_move_support_can_be_supported():
     helper = TurnHelper([
         PlayerHelper('Germany', [
@@ -661,6 +692,7 @@ def test_d_26__failing_move_support_can_be_supported():
             Unit(UnitTypes.FLEET, 'Baltic Sea'): None,
         },
     }
+
 
 def test_d_27__failing_convoy_can_be_supported():
     helper = TurnHelper([
@@ -692,6 +724,7 @@ def test_d_27__failing_convoy_can_be_supported():
         },
     }
 
+
 # Tests D.28, D.29, and D.30 are skipped due to relying on illegal commands that are
 # not possible in this system
 
@@ -719,6 +752,7 @@ def test_d_31__tricky_impossible_support():
             Unit(UnitTypes.FLEET, 'Black Sea'): None,
         },
     }
+
 
 def test_d_32__a_missing_fleet():
     """
@@ -756,6 +790,7 @@ def test_d_32__a_missing_fleet():
         },
     }
 
+
 def test_d_33__unwanted_support_allowed():
     helper = TurnHelper([
         PlayerHelper('Austria', [
@@ -783,6 +818,7 @@ def test_d_33__unwanted_support_allowed():
             Unit(UnitTypes.TROOP, 'Serbia'): None,
         },
     }
+
 
 def test_d_34__support_targetting_own_area_not_allowed():
     """

@@ -36,6 +36,7 @@ def test_i_1a__too_many_build_orders__with_validation():
     with pytest.raises(AssertionError):
         helper.resolve__validated()
 
+
 def test_i_1b__too_many_build_orders():
     """
     This test has been modified from the DATC -- it includes a build from a non-home territory, which
@@ -72,6 +73,7 @@ def test_i_1b__too_many_build_orders():
     }
     assert results == expected_results
 
+
 def test_i_2__fleets_cannot_be_built_in_land_areas():
     # Russia has captured one new territory, all other players have stayed still
     player_units = vanilla_dip.generate_starting_player_units()
@@ -92,6 +94,7 @@ def test_i_2__fleets_cannot_be_built_in_land_areas():
             player_units=player_units,
         )
 
+
 def test_i_3__supply_center_must_be_empty_for_building():
     # Germany has captured one new territory, all other players have stayed still
     player_units = vanilla_dip.generate_starting_player_units()
@@ -111,6 +114,7 @@ def test_i_3__supply_center_must_be_empty_for_building():
             player_units=player_units,
         )
 
+
 def test_i_4__both_coasts_must_be_empty_for_building():
     # Russia has captured one new territory, all other players have stayed still
     player_units = vanilla_dip.generate_starting_player_units()
@@ -125,11 +129,16 @@ def test_i_4__both_coasts_must_be_empty_for_building():
         AdjustmentHelper(
             [
                 PlayerHelper('Russia', [
-                    AdjustmentCommandHelper(AdjustmentCommandType.CREATE, UnitTypes.FLEET, 'St. Petersburg North Coast'),
+                    AdjustmentCommandHelper(
+                        AdjustmentCommandType.CREATE,
+                        UnitTypes.FLEET,
+                        'St. Petersburg North Coast',
+                    ),
                 ]),
             ],
             player_units=player_units,
         )
+
 
 def test_i_5__building_in_home_supply_center_that_is_not_owned():
     # Russia has captured Berlin, and moved out, and Germany will be capturing Holland
@@ -161,6 +170,7 @@ def test_i_5__building_in_home_supply_center_that_is_not_owned():
             owned_territories=owned_territories,
         )
 
+
 def test_i_6__building_in_owned_supply_center_that_is_not_a_home_supply_center():
     # Germany has captured Warsaw, and moved out
     player_units = vanilla_dip.generate_starting_player_units()
@@ -191,6 +201,7 @@ def test_i_6__building_in_owned_supply_center_that_is_not_a_home_supply_center()
             owned_territories=owned_territories,
         )
 
+
 def test_i_7a__only_one_build_in_a_home_supply_center__validated():
     # Russia has captured two territories, everyone else has stayed put
     player_units = vanilla_dip.generate_starting_player_units()
@@ -213,6 +224,7 @@ def test_i_7a__only_one_build_in_a_home_supply_center__validated():
 
     with pytest.raises(AssertionError):
         helper.resolve__validated()
+
 
 def test_i_7b__only_one_build_in_a_home_supply_center__not_validated():
     # Russia has captured two territories, everyone else has stayed put

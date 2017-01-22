@@ -10,6 +10,7 @@ class Territory:
     def same_territory(self, other):
         return self.name == other.name
 
+
 class CoastTerritory(Territory):
     """ LandTerritory """
     parent = None
@@ -46,6 +47,7 @@ class CoastTerritory(Territory):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+
 class LandTerritory(Territory):
     """ CoastTerritory[] """
     coasts = None
@@ -79,6 +81,7 @@ class LandTerritory(Territory):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
 
 class SeaTerritory(Territory):
     def __init__(self, name):
