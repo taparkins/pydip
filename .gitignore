@@ -1,3 +1,7 @@
 .idea/*
 **/test/**/.cache/*
 **/__pycache__/**
+
+# PyPI artifacts
+MANIFEST
+dist/**
