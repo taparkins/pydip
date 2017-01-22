@@ -8,29 +8,29 @@ class CommandType(Enum):
     CONVOY_TRANSPORT = 3
     HOLD = 5
 
-class CommandHelper():
+class CommandHelper:
     """ CommandType, indicating type for command """
-    type = None
+    command_type = None
 
-    def __init__(self, type, unit_type, unit, *args):
-        self.type = type
+    def __init__(self, command_type, unit_type, unit, *args):
+        self.command_type = command_type
         self.unit_type = unit_type
         self.unit = unit
-        self._init_args(type, args)
+        self._init_args(command_type, args)
 
-    def _init_args(self, type, args):
-        if type == CommandType.MOVE:
+    def _init_args(self, command_type, args):
+        if command_type == CommandType.MOVE:
             self._init_move(args)
-        elif type == CommandType.SUPPORT:
+        elif command_type == CommandType.SUPPORT:
             self._init_support(args)
-        elif type == CommandType.CONVOY_MOVE:
+        elif command_type == CommandType.CONVOY_MOVE:
             self._init_convoy_move(args)
-        elif type == CommandType.CONVOY_TRANSPORT:
+        elif command_type == CommandType.CONVOY_TRANSPORT:
             self._init_convoy_transport(args)
-        elif type == CommandType.HOLD:
+        elif command_type == CommandType.HOLD:
             self._init_hold(args)
         else:
-            raise ValueError("Invalid type: {}".format(type))
+            raise ValueError("Invalid type: {}".format(command_type))
 
     def _init_move(self, args):
         assert len(args) == 1
@@ -50,7 +50,8 @@ class CommandHelper():
         self.source = args[0]
         self.destination = args[1]
 
-    def _init_hold(self, args):
+    @staticmethod
+    def _init_hold(args):
         assert len(args) == 0
 
 
@@ -58,30 +59,31 @@ class RetreatCommandType(Enum):
     MOVE = 0
     DISBAND = 1
 
-class RetreatCommandHelper():
+class RetreatCommandHelper:
     """ RetreatCommandType, indicating type for command """
-    type = None
+    command_type = None
 
-    def __init__(self, type, retreat_map, unit_type, unit, *args):
-        self.type = type
+    def __init__(self, command_type, retreat_map, unit_type, unit, *args):
+        self.command_type = command_type
         self.retreat_map = retreat_map
         self.unit_type = unit_type
         self.unit = unit
-        self._init_args(type, args)
+        self._init_args(command_type, args)
 
-    def _init_args(self, type, args):
-        if type == RetreatCommandType.MOVE:
+    def _init_args(self, command_type, args):
+        if command_type == RetreatCommandType.MOVE:
             self._init_move(args)
-        elif type == RetreatCommandType.DISBAND:
+        elif command_type == RetreatCommandType.DISBAND:
             self._init_disband(args)
         else:
-            raise ValueError("Invalid type: {}".format(type))
+            raise ValueError("Invalid type: {}".format(command_type))
 
     def _init_move(self, args):
         assert len(args) == 1
         self.destination = args[0]
 
-    def _init_disband(self, args):
+    @staticmethod
+    def _init_disband(args):
         assert len(args) == 0
 
 
@@ -89,11 +91,11 @@ class AdjustmentCommandType(Enum):
     CREATE = 0
     DISBAND = 1
 
-class AdjustmentCommandHelper():
+class AdjustmentCommandHelper:
     """ AdjustmentCommandType, indicating type for command """
     type = None
 
-    def __init__(self, type, unit_type, territory):
-        self.type = type
+    def __init__(self, command_type, unit_type, territory):
+        self.type = command_type
         self.unit_type = unit_type
         self.territory = territory

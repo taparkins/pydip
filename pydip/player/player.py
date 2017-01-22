@@ -7,7 +7,7 @@ class Player:
     name = None
 
     """ Map -- reference to game board """
-    map = None
+    game_map = None
 
     """ Unit[] -- units owned by this player """
     units = None
@@ -24,20 +24,20 @@ class Player:
         - Coasts should be provided as starting territories for fleets, but the parent will be labeled as the actual
           starting territory.
     """
-    def __init__(self, name, map, starting_configuration):
+    def __init__(self, name, game_map, starting_configuration):
         self.name = name
-        self.map = map
+        self.game_map = game_map
         self.starting_territories = set()
         self.units = []
 
         for config in starting_configuration:
             name = config['territory_name']
             unit_type = config['unit_type']
-            assert name in self.map.name_map.keys()
+            assert name in self.game_map.name_map.keys()
 
-            territory = self.map.name_map[name]
+            territory = self.game_map.name_map[name]
             starting_territory = territory.parent if isinstance(territory, CoastTerritory) else territory
-            assert starting_territory.name in self.map.name_map.keys()
+            assert starting_territory.name in self.game_map.name_map.keys()
             assert starting_territory.name not in self.starting_territories
             self.starting_territories.add(starting_territory.name)
 

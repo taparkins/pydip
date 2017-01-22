@@ -43,8 +43,8 @@ class RetreatMoveCommand(RetreatCommand):
 
     def __init__(self, retreat_map, player, unit, destination):
         super().__init__(retreat_map, player, unit)
-        map = self.player.map
-        assert destination in map.name_map
+        game_map = self.player.game_map
+        assert destination in game_map.name_map
         assert destination in retreat_map[player.name][unit]
         self.destination = destination
 

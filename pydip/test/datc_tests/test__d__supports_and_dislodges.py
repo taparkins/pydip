@@ -574,12 +574,12 @@ def test_d_22__impossible_fleet_move_cannot_be_supported():
     Adapted from DATC test, because the DATC test requires illegal moves to be
     specified, which this system prevents
     """
-    map = generate_map()
+    game_map = generate_map()
     germany_starting_configuration = [
         {'territory_name': 'Kiel Coast', 'unit_type': UnitTypes.FLEET},
         {'territory_name': 'Burgundy', 'unit_type': UnitTypes.TROOP},
     ]
-    germany = Player("Germany", map, germany_starting_configuration)
+    germany = Player("Germany", game_map, germany_starting_configuration)
 
     with pytest.raises(AssertionError):
         SupportCommand(germany, germany.units[1], germany.units[0], 'Munich')
@@ -589,12 +589,12 @@ def test_d_23__impossible_coast_move_can_not_be_supported():
     Adapted from DATC test, because the DATC test requires illegal moves to be
     specified, which this system prevents
     """
-    map = generate_map()
+    game_map = generate_map()
     france_starting_configuration = [
         {'territory_name': 'Spain North Coast', 'unit_type': UnitTypes.FLEET},
         {'territory_name': 'Marseilles Coast', 'unit_type': UnitTypes.FLEET},
     ]
-    france = Player("France", map, france_starting_configuration)
+    france = Player("France", game_map, france_starting_configuration)
 
     with pytest.raises(AssertionError):
         SupportCommand(france, france.units[1], france.units[0], 'Gulf of Lyon')
@@ -604,12 +604,12 @@ def test_d_24__impossible_army_move_cannot_be_supported():
     Adapted from DATC test, because the DATC test requires illegal moves to be
     specified, which this system prevents
     """
-    map = generate_map()
+    game_map = generate_map()
     france_starting_configuration = [
         {'territory_name': 'Marseilles', 'unit_type': UnitTypes.TROOP},
         {'territory_name': 'Spain South Coast', 'unit_type': UnitTypes.FLEET},
     ]
-    france = Player("France", map, france_starting_configuration)
+    france = Player("France", game_map, france_starting_configuration)
 
     with pytest.raises(AssertionError):
         SupportCommand(france, france.units[1], france.units[0], 'Gulf of Lyon')
@@ -789,16 +789,16 @@ def test_d_34__support_targetting_own_area_not_allowed():
     Adapted from DATC test, because the DATC test requires illegal moves to be
     specified, which this system prevents
     """
-    map = generate_map()
+    game_map = generate_map()
     italy_starting_configuration = [
         {'territory_name': 'Prussia', 'unit_type': UnitTypes.TROOP},
     ]
-    italy = Player("Italy", map, italy_starting_configuration)
+    italy = Player("Italy", game_map, italy_starting_configuration)
 
     russia_starting_configuration = [
         {'territory_name': 'Warsaw', 'unit_type': UnitTypes.TROOP},
     ]
-    russia = Player("Russia", map, russia_starting_configuration)
+    russia = Player("Russia", game_map, russia_starting_configuration)
 
     with pytest.raises(AssertionError):
         SupportCommand(italy, italy.units[0], russia.units[0], 'Prussia')

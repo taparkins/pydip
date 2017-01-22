@@ -1,7 +1,7 @@
 import pytest
 
 from pydip.map.predefined.vanilla_dip import generate_map
-from pydip.player.command.command import SupportCommand, ConvoyTransportCommand
+from pydip.player.command.command import ConvoyTransportCommand
 from pydip.player.player import Player
 from pydip.player.unit import Unit, UnitTypes
 from pydip.test.command_helper import CommandType, CommandHelper
@@ -15,12 +15,12 @@ def test_f_1__dislodged_unit_has_no_effect_on_attackers_area():
     issued a convoy command from a coastal territory, which this system
     does not allow
     """
-    map = generate_map()
+    game_map = generate_map()
     turkey_starting_configuration = [
         {'territory_name': 'Greece', 'unit_type': UnitTypes.TROOP},
         {'territory_name': 'Constantinople Coast', 'unit_type': UnitTypes.FLEET},
     ]
-    turkey = Player("Turkey", map, turkey_starting_configuration)
+    turkey = Player("Turkey", game_map, turkey_starting_configuration)
 
     with pytest.raises(AssertionError):
         ConvoyTransportCommand(turkey, turkey.units[1], turkey.units[0], 'Sevastopol')

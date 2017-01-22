@@ -1,5 +1,5 @@
 
-class PlayerHelper():
+class PlayerHelper:
     def __init__(self, name, command_helpers):
         self.name = name
         self.command_helpers = command_helpers

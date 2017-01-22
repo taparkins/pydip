@@ -30,7 +30,7 @@ def calculate_adjustments(ownership_map, player_units):
         for other_player in all_players:
             if other_player != player:
                 other_player_positions |= {
-                    ownership_map.supply_map.map.relevant_name_for_territory(unit.position)
+                    ownership_map.supply_map.game_map.relevant_name_for_territory(unit.position)
                     for unit in player_units[other_player]
                 }
 
@@ -40,7 +40,7 @@ def calculate_adjustments(ownership_map, player_units):
                     new_owned_territories[player].add(territory)
 
         for unit in player_units[player]:
-            relevant_territory = ownership_map.supply_map.map.relevant_name_for_territory(unit.position)
+            relevant_territory = ownership_map.supply_map.game_map.relevant_name_for_territory(unit.position)
             if relevant_territory in ownership_map.supply_map.supply_centers:
                 new_owned_territories[player].add(relevant_territory)
 
@@ -88,7 +88,7 @@ def resolve_adjustment(ownership_map, adjustment_counts, player_units, commands)
             disbands = _find_disbands(player, adjustment_counts, player_units, commands)
             new_player_units[player] -= disbands
         elif count > 0:
-            creates = _find_creates(ownership_map.supply_map.map, player, adjustment_counts, commands)
+            creates = _find_creates(ownership_map.supply_map.game_map, player, adjustment_counts, commands)
             new_player_units[player] |= creates
 
     return new_player_units
@@ -115,7 +115,7 @@ def _find_disbands(player, adjustment_counts, player_units, commands):
 
     return disbands
 
-def _find_creates(map, player, adjustment_counts, commands):
+def _find_creates(game_map, player, adjustment_counts, commands):
     permitted_create_count = adjustment_counts[player]
 
     filtered_commands = filter(lambda c: isinstance(c, AdjustmentCreateCommand), commands)
@@ -126,7 +126,7 @@ def _find_creates(map, player, adjustment_counts, commands):
     territories_with_creation = set()
     preserved_commands = []
     for command in filtered_commands:
-        relevant_name = map.relevant_name_for_territory(command.unit.position)
+        relevant_name = game_map.relevant_name_for_territory(command.unit.position)
         if relevant_name in territories_with_creation:
             continue
         territories_with_creation.add(relevant_name)
@@ -151,7 +151,7 @@ def _validate_adjustments(ownership_map, adjustment_counts, commands):
             elif len(provided_adjustment_terriories[player]) >= adjustment_counts[player]:
                 raise AssertionError("{} attempting to Create too many units in one turn".format(player))
 
-            relevant_command_territory = ownership_map.supply_map.map.relevant_name_for_territory(command.unit.position)
+            relevant_command_territory = ownership_map.supply_map.game_map.relevant_name_for_territory(command.unit.position)
             if relevant_command_territory in provided_adjustment_terriories[player]:
                 raise AssertionError("{} attempting to Create multiple units in same territory".format(player))
 
@@ -164,7 +164,7 @@ def _validate_adjustments(ownership_map, adjustment_counts, commands):
             elif len(provided_adjustment_terriories[player]) >= -adjustment_counts[player]:
                 raise AssertionError("{} attempting to Disband too many units in one turn".format(player))
 
-            relevant_command_territory = ownership_map.supply_map.map.relevant_name_for_territory(command.unit.position)
+            relevant_command_territory = ownership_map.supply_map.game_map.relevant_name_for_territory(command.unit.position)
             if relevant_command_territory in provided_adjustment_terriories[player]:
                 raise AssertionError("{} attempting to Disband same unit multiple times".format(player))
 

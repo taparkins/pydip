@@ -15,7 +15,7 @@ in which locations those players will have after resolving retreats. Will
 be equivalent to the entries in retreat_map, minus any disbanded units --
 and, of course, without any retreat requirements.
 """
-def resolve_retreats(map, retreat_map, commands):
+def resolve_retreats(retreat_map, commands):
     assert all(isinstance(command, RetreatCommand) for command in commands)
     retreaters = { (command.player.name, command.unit) for command in commands }
     valid_retreaters = set()

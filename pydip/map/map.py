@@ -70,16 +70,16 @@ class Map:
 
 class SupplyCenterMap:
     """ Map """
-    map = None
+    game_map = None
 
     """ String{}, subset of map.name_map.keys() """
     supply_centers = None
 
-    def __init__(self, map, supply_centers):
-        assert supply_centers < map.name_map.keys()
+    def __init__(self, game_map, supply_centers):
+        assert supply_centers < game_map.name_map.keys()
 
         self.supply_centers = set(supply_centers)
-        self.map = map
+        self.game_map = game_map
 
 class OwnershipMap:
     """ SupplyCenterMap """
@@ -102,9 +102,9 @@ class OwnershipMap:
         self.home_territories = home_territories
 
     def territory_is_owned(self, player, territory_name):
-        relevant_name = self.supply_map.map.relevant_name_for_territory(territory_name)
+        relevant_name = self.supply_map.game_map.relevant_name_for_territory(territory_name)
         return relevant_name in self.owned_territories[player]
 
     def territory_is_home(self, player, territory_name):
-        relevant_name = self.supply_map.map.relevant_name_for_territory(territory_name)
+        relevant_name = self.supply_map.game_map.relevant_name_for_territory(territory_name)
         return relevant_name in self.home_territories[player]

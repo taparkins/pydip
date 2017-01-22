@@ -6,23 +6,23 @@ def test_empty_map():
     territory_descriptors = []
     adjacencies = []
 
-    map = Map(territory_descriptors, adjacencies)
+    game_map = Map(territory_descriptors, adjacencies)
     expected_name_map = dict()
     expected_adjacency = dict()
 
-    assert map.name_map == expected_name_map
-    assert map.adjacency == expected_adjacency
+    assert game_map.name_map == expected_name_map
+    assert game_map.adjacency == expected_adjacency
 
 def test_singleton_map():
     territory_descriptors = [ { 'name' : 'Pacific Ocean' } ]
     adjacencies = []
 
-    map = Map(territory_descriptors, adjacencies)
+    game_map = Map(territory_descriptors, adjacencies)
     expected_name_map = { 'Pacific Ocean' : SeaTerritory('Pacific Ocean') }
     expected_adjacency = { 'Pacific Ocean' : set() }
 
-    assert map.name_map == expected_name_map
-    assert map.adjacency == expected_adjacency
+    assert game_map.name_map == expected_name_map
+    assert game_map.adjacency == expected_adjacency
 
 def test_two_connected_land_territories():
     territory_descriptors = [
@@ -31,7 +31,7 @@ def test_two_connected_land_territories():
     ]
     adjacencies = [ ('United States', 'Mexico' ) ]
 
-    map = Map(territory_descriptors, adjacencies)
+    game_map = Map(territory_descriptors, adjacencies)
     expected_name_map = {
         'United States' : LandTerritory('United States', []),
         'Mexico'        : LandTerritory('Mexico',        []),
@@ -41,8 +41,8 @@ def test_two_connected_land_territories():
         'Mexico'        : { 'United States' },
     }
 
-    assert map.name_map == expected_name_map
-    assert map.adjacency == expected_adjacency
+    assert game_map.name_map == expected_name_map
+    assert game_map.adjacency == expected_adjacency
 
 def test_land_territories_with_lake():
     territory_descriptors = [
@@ -57,7 +57,7 @@ def test_land_territories_with_lake():
         ('Ogden Coast', 'Great Salt Lake'),
     ]
 
-    map = Map(territory_descriptors, adjacencies)
+    game_map = Map(territory_descriptors, adjacencies)
     slc_territory = LandTerritory('Salt Lake City', ['Salt Lake City Coast'])
     ogden_territory = LandTerritory('Ogden', ['Ogden Coast'])
     expected_name_map = {
@@ -75,5 +75,5 @@ def test_land_territories_with_lake():
         'Great Salt Lake'     : {'Salt Lake City Coast', 'Ogden Coast'}
     }
 
-    assert map.name_map == expected_name_map
-    assert map.adjacency == expected_adjacency
+    assert game_map.name_map == expected_name_map
+    assert game_map.adjacency == expected_adjacency

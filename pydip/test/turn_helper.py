@@ -5,17 +5,17 @@ from pydip.test.command_helper import CommandType
 from pydip.turn.resolve import resolve_turn
 
 
-class TurnHelper():
-    def __init__(self, player_helpers, map=vanilla_dip.generate_map()):
-        self.map = map
+class TurnHelper:
+    def __init__(self, player_helpers, game_map=vanilla_dip.generate_map()):
+        self.game_map = game_map
         self.players = {
-            player_helper.name : Player(player_helper.name, map, player_helper.get_starting_configuration())
+            player_helper.name : Player(player_helper.name, game_map, player_helper.get_starting_configuration())
             for player_helper in player_helpers
         }
         self.commands = self._build_commands(player_helpers)
 
     def resolve(self):
-        return resolve_turn(self.map, self.commands)
+        return resolve_turn(self.game_map, self.commands)
 
     def _build_commands(self, player_helpers):
         commands = []
@@ -27,19 +27,19 @@ class TurnHelper():
 
     def _build_command(self, player, command):
         unit = self._find_unit(command.unit)
-        if command.type == CommandType.MOVE:
+        if command.command_type == CommandType.MOVE:
             return MoveCommand(player, unit, command.destination)
-        if command.type == CommandType.SUPPORT:
+        if command.command_type == CommandType.SUPPORT:
             supported_unit = self._find_unit(command.source)
             return SupportCommand(player, unit, supported_unit, command.destination)
-        if command.type == CommandType.CONVOY_MOVE:
+        if command.command_type == CommandType.CONVOY_MOVE:
             return ConvoyMoveCommand(player, unit, command.destination)
-        if command.type == CommandType.CONVOY_TRANSPORT:
+        if command.command_type == CommandType.CONVOY_TRANSPORT:
             transported_unit = self._find_unit(command.source)
             return ConvoyTransportCommand(player, unit, transported_unit, command.destination)
-        if command.type == CommandType.HOLD:
+        if command.command_type == CommandType.HOLD:
             return HoldCommand(player, unit)
-        raise ValueError("Invalid command type: {}".format(command.type))
+        raise ValueError("Invalid command type: {}".format(command.command_type))
 
     def _find_unit(self, territory):
         for player in self.players.values():

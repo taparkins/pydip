@@ -7,7 +7,7 @@ from pydip.test.command_helper import AdjustmentCommandType
 from pydip.turn.adjustment import calculate_adjustments, resolve_adjustment, resolve_adjustment__validated
 
 
-class AdjustmentHelper():
+class AdjustmentHelper:
     def __init__(
             self,
             player_helpers,
@@ -17,19 +17,17 @@ class AdjustmentHelper():
             supply_map=vanilla_dip.generate_supply_center_map(),
     ):
         self.ownership_map = OwnershipMap(supply_map, owned_territories, home_territories)
+        self.player_units = player_units
+        self.ownership_map, self.adjustment_counts = calculate_adjustments(self.ownership_map, self.player_units)
+
         self.players = {
             player_helper.name : Player(
                 player_helper.name,
-                self.ownership_map.supply_map.map,
+                self.ownership_map.supply_map.game_map,
                 _get_starting_configuration(player_units[player_helper.name]))
             for player_helper in player_helpers
         }
-        self.calculate_adjustments(player_units)
         self.commands = self._build_commands(player_helpers)
-
-    def calculate_adjustments(self, player_units):
-        self.player_units = player_units
-        self.ownership_map, self.adjustment_counts = calculate_adjustments(self.ownership_map, self.player_units)
 
     def resolve(self):
         return resolve_adjustment(self.ownership_map, self.adjustment_counts, self.player_units, self.commands)

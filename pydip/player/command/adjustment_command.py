@@ -34,13 +34,13 @@ class AdjustmentCreateCommand(AdjustmentCommand):
     def __init__(self, ownership_map, player, unit):
         super().__init__(player, unit)
 
-        unit_territory = ownership_map.supply_map.map.name_map[unit.position]
+        unit_territory = ownership_map.supply_map.game_map.name_map[unit.position]
         assert ownership_map.territory_is_owned(player.name, unit.position)
         assert ownership_map.territory_is_home(player.name, unit.position)
         assert unit_type_can_enter(unit.unit_type, unit_territory)
 
         for existing_unit in player.units:
-            existing_unit_territory = ownership_map.supply_map.map.name_map[existing_unit.position]
+            existing_unit_territory = ownership_map.supply_map.game_map.name_map[existing_unit.position]
             assert not unit_territory.same_territory(existing_unit_territory)
 
     def __eq__(self, other):

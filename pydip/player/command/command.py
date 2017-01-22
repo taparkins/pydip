@@ -4,7 +4,7 @@ from pydip.player.helpers import (
     unit_can_support,
     territory_is_convoy_compatible,
 )
-from player.unit import UnitTypes
+from pydip.player.unit import UnitTypes
 
 
 class Command:
@@ -37,10 +37,10 @@ class MoveCommand(Command):
 
     def __init__(self, player, unit, destination):
         super().__init__(player, unit)
-        map = self.player.map
-        assert destination in map.name_map
+        game_map = self.player.game_map
+        assert destination in game_map.name_map
         assert (
-            unit_can_enter(map, unit, map.name_map[destination]) or
+            unit_can_enter(game_map, unit, game_map.name_map[destination]) or
             unit.position == destination
         )
         self.destination = destination
@@ -90,20 +90,20 @@ class SupportCommand(Command):
         super().__init__(player, unit)
         self.supported_unit = supported_unit
         self.destination = destination
-        map = self.player.map
+        game_map = self.player.game_map
 
-        assert destination in map.name_map
-        destination_territory = map.name_map[destination]
-        supported_territory   = map.name_map[supported_unit.position]
+        assert destination in game_map.name_map
+        destination_territory = game_map.name_map[destination]
+        supported_territory   = game_map.name_map[supported_unit.position]
 
         assert (
             destination == supported_unit.position or
-            unit_can_enter(map, supported_unit, destination_territory) or
+            unit_can_enter(game_map, supported_unit, destination_territory) or
             (supported_unit.unit_type == UnitTypes.TROOP and
              territory_is_convoy_compatible(destination_territory) and
              territory_is_convoy_compatible(supported_territory))
         )
-        assert unit_can_support(map, unit, destination_territory)
+        assert unit_can_support(game_map, unit, destination_territory)
 
     def __eq__(self, other):
         return (super(SupportCommand, self).__eq__(other) and
@@ -141,16 +141,16 @@ class ConvoyMoveCommand(Command):
     def __init__(self, player, unit, destination):
         super().__init__(player, unit)
         self.destination = destination
-        map = self.player.map
+        game_map = self.player.game_map
 
-        current_territory     = map.name_map[unit.position]
-        destination_territory = map.name_map[destination]
+        current_territory     = game_map.name_map[unit.position]
+        destination_territory = game_map.name_map[destination]
         assert current_territory != destination_territory
 
         assert unit.unit_type == UnitTypes.TROOP
         assert territory_is_convoy_compatible(current_territory)
 
-        assert destination in map.name_map
+        assert destination in game_map.name_map
         assert territory_is_convoy_compatible(destination_territory)
 
     def __eq__(self, other):
@@ -195,18 +195,18 @@ class ConvoyTransportCommand(Command):
         self.transported_unit = transported_unit
         self.destination = destination
         assert unit.unit_type == UnitTypes.FLEET
-        map = self.player.map
+        game_map = self.player.game_map
 
-        current_territory = map.name_map[unit.position]
-        source_territory = map.name_map[transported_unit.position]
-        destination_territory = map.name_map[destination]
+        current_territory = game_map.name_map[unit.position]
+        source_territory = game_map.name_map[transported_unit.position]
+        destination_territory = game_map.name_map[destination]
         assert source_territory != destination_territory
         assert isinstance(current_territory, SeaTerritory)
 
         assert transported_unit.unit_type == UnitTypes.TROOP
         assert territory_is_convoy_compatible(source_territory)
 
-        assert destination in map.name_map
+        assert destination in game_map.name_map
         assert territory_is_convoy_compatible(destination_territory)
 
     def __eq__(self, other):

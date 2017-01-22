@@ -13,7 +13,7 @@ from pydip.test.retreat_helper import RetreatHelper
 # Test H.4 has been modified, since it relates to a user issuing a
 # command to a non-retreating unit during the retreat step. This is
 # not allowed by the system, so this test simply asserts that fact.
-from test.turn_helper import TurnHelper
+from pydip.test.turn_helper import TurnHelper
 
 
 def test_h_4__no_other_moves_during_retreat():

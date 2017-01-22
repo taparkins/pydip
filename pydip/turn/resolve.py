@@ -27,11 +27,11 @@ If the territory set is not provided, no retreat is required. If the
 territory set is provided, a retreat is required. If it is empty, no
 retreat is possible.
 """
-def resolve_turn(map, commands):
-    command_map = CommandMap(map, commands)
+def resolve_turn(game_map, commands):
+    command_map = CommandMap(game_map, commands)
     _init_resolution()
-    resolutions = { command.unit.position: _resolve(map, command_map, command) for command in commands }
-    return compute_retreats(map, command_map, commands, resolutions)
+    resolutions = {command.unit.position: _resolve(game_map, command_map, command) for command in commands}
+    return compute_retreats(game_map, command_map, commands, resolutions)
 
 # Below implementation is taken with minor modification from Lucas Kruijswijk:
 # http://www.diplom.org/Zine/S2009M/Kruijswijk/DipMath_Chp6.htm
@@ -51,7 +51,7 @@ def _init_resolution():
     state_map      = defaultdict(lambda: ResolutionState.UNRESOLVED)
     dependency_list = list()
 
-def _resolve(map, command_map, command):
+def _resolve(game_map, command_map, command):
     global resolution_map
     global state_map
     global dependency_list
@@ -70,7 +70,7 @@ def _resolve(map, command_map, command):
     # Initially, guess that we fail
     resolution_map[command_territory] = False
     state_map[command_territory]      = ResolutionState.GUESSING
-    fail_guess_result                 = _adjudicate(map, command_map, command)
+    fail_guess_result                 = _adjudicate(game_map, command_map, command)
 
     # If the dependency graph didn't change as a consequence, our result doesn't
     # depend on the guess and we can return right away
@@ -98,7 +98,7 @@ def _resolve(map, command_map, command):
 
     resolution_map[command_territory] = True
     state_map[command_territory]      = ResolutionState.GUESSING
-    success_guess_result              = _adjudicate(map, command_map, command)
+    success_guess_result              = _adjudicate(game_map, command_map, command)
 
     # If results are consistent, no need for further checking
     if fail_guess_result == success_guess_result:
@@ -112,37 +112,37 @@ def _resolve(map, command_map, command):
 
     # If we got to this point, that means we encountered a paradox that has two
     # consistent outcomes, and we need a backup rule to fully resolve it
-    _backup_rule(map, command_map, dependency_sub_set)
+    _backup_rule(command_map, dependency_sub_set)
     dependency_list = dependency_list[:old_dependency_length]
 
     # And because the backup rule may not resolve our own command, we'll need to
     # start fresh just to be sure
-    return _resolve(map, command_map, command)
+    return _resolve(game_map, command_map, command)
 
-def _adjudicate(map, command_map, command):
+def _adjudicate(game_map, command_map, command):
     if isinstance(command, MoveCommand):
-        return _adjudicate_move(map, command_map, command)
+        return _adjudicate_move(game_map, command_map, command)
     elif isinstance(command, ConvoyMoveCommand):
-        return _adjudicate_convoy_move(map, command_map, command)
+        return _adjudicate_convoy_move(game_map, command_map, command)
     elif isinstance(command, ConvoyTransportCommand):
-        return _adjudicate_convoy_transport(map, command_map, command)
+        return _adjudicate_convoy_transport(game_map, command_map, command)
     elif isinstance(command, SupportCommand):
-        return _adjudicate_support(map, command_map, command)
+        return _adjudicate_support(game_map, command_map, command)
     else:
         raise ValueError("Command unexpected type")
 
-def _backup_rule(map, command_map, dependency_set):
+def _backup_rule(command_map, dependency_set):
     global resolution_map
     global state_map
     for dependency_territory in dependency_set:
         dependency = command_map.get_home_command(dependency_territory)
         if isinstance(dependency, MoveCommand):
             if isinstance(command_map.get_home_command(dependency.destination), ConvoyTransportCommand):
-                _apply_szykman(map, command_map, dependency_set)
+                _apply_szykman(command_map, dependency_set)
                 return
-    _apply_circular_movement(map, command_map, dependency_set)
+    _apply_circular_movement(command_map, dependency_set)
 
-def _apply_szykman(map, command_map, dependency_set):
+def _apply_szykman(command_map, dependency_set):
     for dependency_territory in dependency_set:
         dependency = command_map.get_home_command(dependency_territory)
         if isinstance(dependency, ConvoyMoveCommand) or isinstance(dependency, ConvoyTransportCommand):
@@ -151,7 +151,7 @@ def _apply_szykman(map, command_map, dependency_set):
         else:
             state_map[dependency_territory] = ResolutionState.UNRESOLVED
 
-def _apply_circular_movement(map, command_map, dependency_set):
+def _apply_circular_movement(command_map, dependency_set):
     for dependency_territory in dependency_set:
         dependency = command_map.get_home_command(dependency_territory)
         if isinstance(dependency, MoveCommand) or isinstance(dependency, ConvoyMoveCommand):
@@ -163,17 +163,17 @@ def _apply_circular_movement(map, command_map, dependency_set):
 #----------------------
 # convoys
 #----------------------
-def _adjudicate_convoy_move(map, command_map, command):
+def _adjudicate_convoy_move(game_map, command_map, command):
     assert isinstance(command, ConvoyMoveCommand)
-    if not _has_path(map, command_map, command):
+    if not _has_path(game_map, command_map, command):
         return False
-    return _adjudicate_move(map, command_map, command)
+    return _adjudicate_move(game_map, command_map, command)
 
-def _adjudicate_convoy_transport(map, command_map, command):
+def _adjudicate_convoy_transport(game_map, command_map, command):
     assert isinstance(command, ConvoyTransportCommand)
-    return not _is_dislodged(map, command_map, command.unit)
+    return not _is_dislodged(game_map, command_map, command.unit)
 
-def _has_path(map, command_map, command):
+def _has_path(game_map, command_map, command):
     assert isinstance(command, ConvoyMoveCommand)
     visited     = set()
     source      = command.unit.position
@@ -181,9 +181,9 @@ def _has_path(map, command_map, command):
     possible_transports = command_map.get_convoy_transports(source, destination)
     possible_transport_territories = { transport.unit.position for transport in possible_transports }
 
-    starting_territory = map.name_map[source]
-    coastal_adjacencies = reduce(set.__or__, [map.adjacency[coast.name] for coast in starting_territory.coasts])
-    coastal_adjacencies = list(filter(lambda t: isinstance(map.name_map[t], SeaTerritory), coastal_adjacencies))
+    starting_territory = game_map.name_map[source]
+    coastal_adjacencies = reduce(set.__or__, [game_map.adjacency[coast.name] for coast in starting_territory.coasts])
+    coastal_adjacencies = list(filter(lambda t: isinstance(game_map.name_map[t], SeaTerritory), coastal_adjacencies))
     to_visit = [
         possible_transport_territory
         for possible_transport_territory in possible_transport_territories
@@ -194,10 +194,10 @@ def _has_path(map, command_map, command):
         visiting = to_visit.pop()
         visited.add(visiting)
         # if the convoy was disrupted, we can't use it as part of our chain
-        if not _resolve(map, command_map, command_map.get_home_command(visiting)):
+        if not _resolve(game_map, command_map, command_map.get_home_command(visiting)):
             continue
 
-        adjacent = [map.name_map[adj] for adj in map.adjacency[visiting]]
+        adjacent = [game_map.name_map[adj] for adj in game_map.adjacency[visiting]]
 
         adjacent_land = {
             coast.parent.name for coast in adjacent
@@ -217,21 +217,21 @@ def _has_path(map, command_map, command):
 #----------------------
 # move
 #----------------------
-def _adjudicate_move(map, command_map, command):
+def _adjudicate_move(game_map, command_map, command):
     assert isinstance(command, MoveCommand) or isinstance(command, ConvoyMoveCommand)
 
-    attack_strength = _attack_strength(map, command_map, command)
+    attack_strength = _attack_strength(game_map, command_map, command)
 
     prevent_combatants     = _get_prevent_combatants(command_map, command)
-    high_prevent_strength = max([_prevent_strength(map, command_map, prevent_combatant)
+    high_prevent_strength = max([_prevent_strength(game_map, command_map, prevent_combatant)
                                  for prevent_combatant in prevent_combatants] + [0])
     if attack_strength <= high_prevent_strength:
         return False
 
-    head_to_head_combatant = _get_head_to_head_combatant(map, command_map, command)
+    head_to_head_combatant = _get_head_to_head_combatant(game_map, command_map, command)
     if head_to_head_combatant is not None:
-        return attack_strength > _defend_strength(map, command_map, head_to_head_combatant)
-    return attack_strength > _hold_strength(map, command_map, command.destination)
+        return attack_strength > _defend_strength(game_map, command_map, head_to_head_combatant)
+    return attack_strength > _hold_strength(game_map, command_map, command.destination)
 
 def _get_prevent_combatants(command_map, command):
     direct_combatants = command_map.get_attackers(command.destination)
@@ -240,31 +240,31 @@ def _get_prevent_combatants(command_map, command):
     combatants = filter(lambda c: c != command, combatants)
     return combatants
 
-def _get_head_to_head_combatant(map, command_map, command):
+def _get_head_to_head_combatant(game_map, command_map, command):
     if isinstance(command, ConvoyMoveCommand):
         return None
     potential_attacker = command_map.get_home_command(command.destination)
     if potential_attacker is not None:
         if isinstance(potential_attacker, MoveCommand):
-            attacked_territory = map.name_map[potential_attacker.destination]
-            position_territory = map.name_map[command.unit.position]
+            attacked_territory = game_map.name_map[potential_attacker.destination]
+            position_territory = game_map.name_map[command.unit.position]
             if position_territory.same_territory(attacked_territory):
                 return potential_attacker
     return None
 
-def _attack_strength(map, command_map, command):
+def _attack_strength(game_map, command_map, command):
     if isinstance(command, ConvoyMoveCommand):
-        if not _has_path(map, command_map, command):
+        if not _has_path(game_map, command_map, command):
             return 0
     attacked_command = command_map.get_home_command(command.destination)
     supporters = command_map.get_supports(command.unit.position, command.destination)
-    supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
+    supporters = filter(lambda c: _resolve(game_map, command_map, c), supporters)
 
     if attacked_command is None:
         return 1 + len(list(supporters))
-    if _get_head_to_head_combatant(map, command_map, command) is None:
+    if _get_head_to_head_combatant(game_map, command_map, command) is None:
         if isinstance(attacked_command, MoveCommand) or isinstance(attacked_command, ConvoyMoveCommand):
-            if _resolve(map, command_map, attacked_command):
+            if _resolve(game_map, command_map, attacked_command):
                 return 1 + len(list(supporters))
     if attacked_command.player.name == command.player.name:
         return 0
@@ -272,47 +272,47 @@ def _attack_strength(map, command_map, command):
     supporters = filter(lambda c: c.player.name != attacked_command.player.name, supporters)
     return 1 + len(list(supporters))
 
-def _prevent_strength(map, command_map, command):
+def _prevent_strength(game_map, command_map, command):
     if isinstance(command, ConvoyMoveCommand):
-        if not _has_path(map, command_map, command):
+        if not _has_path(game_map, command_map, command):
             return 0
-    head_to_head_combatant = _get_head_to_head_combatant(map, command_map, command)
+    head_to_head_combatant = _get_head_to_head_combatant(game_map, command_map, command)
     if head_to_head_combatant is not None:
-        if _resolve(map, command_map, head_to_head_combatant):
+        if _resolve(game_map, command_map, head_to_head_combatant):
             return 0
 
     supporters = command_map.get_supports(command.unit.position, command.destination)
-    supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
+    supporters = filter(lambda c: _resolve(game_map, command_map, c), supporters)
     return 1 + len(list(supporters))
 
-def _defend_strength(map, command_map, command):
+def _defend_strength(game_map, command_map, command):
     supporters = command_map.get_supports(command.unit.position, command.destination)
-    supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
+    supporters = filter(lambda c: _resolve(game_map, command_map, c), supporters)
     return 1 + len(list(supporters))
 
-def _hold_strength(map, command_map, territory):
+def _hold_strength(game_map, command_map, territory):
     home_command = command_map.get_home_command(territory)
     if home_command is None:
         return 0
     if isinstance(home_command, MoveCommand) or isinstance(home_command, ConvoyMoveCommand):
-        return 0 if _resolve(map, command_map, home_command) else 1
+        return 0 if _resolve(game_map, command_map, home_command) else 1
     supporters = command_map.get_supports(territory, territory)
-    supporters = filter(lambda c: _resolve(map, command_map, c), supporters)
+    supporters = filter(lambda c: _resolve(game_map, command_map, c), supporters)
     return 1 + len(list(supporters))
 
 #----------------------
 # support
 #----------------------
-def _adjudicate_support(map, command_map, command):
+def _adjudicate_support(game_map, command_map, command):
     assert isinstance(command, SupportCommand)
     if _invalid_support(command_map, command):
         return False
     if len(_indirect_non_convoy_attackers(command_map, command)) > 0:
         return False
     for convoy_attacker in _indirect_convoy_attackers(command_map, command):
-        if _has_path(map, command_map, convoy_attacker):
+        if _has_path(game_map, command_map, convoy_attacker):
             return False
-    return not _is_dislodged(map, command_map, command.unit)
+    return not _is_dislodged(game_map, command_map, command.unit)
 
 def _invalid_support(command_map, command):
     supported_command = command_map.get_home_command(command.supported_unit.position)
@@ -336,22 +336,22 @@ def _indirect_convoy_attackers(command_map, command):
 Determines if the unit will be dislodged by a different move, assuming it stays in place.
 Please note that this function does not indicate whether the unit _will_ stay in place.
 """
-def _is_dislodged(map, command_map, unit):
-    return any((_resolve(map, command_map, attack) for attack in _attackers(map, command_map, unit)))
+def _is_dislodged(game_map, command_map, unit):
+    return any((_resolve(game_map, command_map, attack) for attack in _attackers(game_map, command_map, unit)))
 
-def _attackers(map, command_map, unit):
+def _attackers(game_map, command_map, unit):
     filtered = command_map.get_attackers(unit.position)
     filtered = filter(lambda c: isinstance(c, MoveCommand) or isinstance(c, ConvoyMoveCommand), filtered)
-    filtered = filter(lambda c: map.name_map[c.destination].same_territory(map.name_map[unit.position]), filtered)
+    filtered = filter(lambda c: game_map.name_map[c.destination].same_territory(game_map.name_map[unit.position]), filtered)
 
     return list(filtered)
 
 #----------------------
 # Retreats
 #----------------------
-def compute_retreats(map, command_map, commands, resolutions):
+def compute_retreats(game_map, command_map, commands, resolutions):
     player_results = defaultdict(dict)
-    occupied_territories = _get_occupations(map, command_map, commands, resolutions)
+    occupied_territories = _get_occupations(game_map, commands, resolutions)
 
     for command in commands:
         current_position = command.unit.position
@@ -368,18 +368,18 @@ def compute_retreats(map, command_map, commands, resolutions):
             if len(attackers) == 0:
                 player_results[command.player.name][command.unit] = None
             else:
-                retreat_options = map.adjacency[current_position]
+                retreat_options = game_map.adjacency[current_position]
                 retreat_options = filter(lambda t: t not in occupied_territories, retreat_options)
-                retreat_options = filter(lambda t: all(t not in _applicable_territories(map, attacker.unit.position) for attacker in direct_attackers), retreat_options)
-                retreat_options = filter(lambda t: _hold_strength(map, command_map, t) == 0, retreat_options)
-                retreat_options = filter(lambda t: all(_prevent_strength(map, command_map, attacker) == 0 for attacker in command_map.get_attackers(t)), retreat_options)
+                retreat_options = filter(lambda t: all(t not in _applicable_territories(game_map, attacker.unit.position) for attacker in direct_attackers), retreat_options)
+                retreat_options = filter(lambda t: _hold_strength(game_map, command_map, t) == 0, retreat_options)
+                retreat_options = filter(lambda t: all(_prevent_strength(game_map, command_map, attacker) == 0 for attacker in command_map.get_attackers(t)), retreat_options)
 
                 player_results[command.player.name][command.unit] = set(retreat_options)
 
     return player_results
 
-def _applicable_territories(map, territory_name):
-    territory = map.name_map[territory_name]
+def _applicable_territories(game_map, territory_name):
+    territory = game_map.name_map[territory_name]
     applicable = { territory_name }
     if isinstance(territory, LandTerritory):
         applicable |= { coast.name for coast in territory.coasts }
@@ -389,16 +389,16 @@ def _applicable_territories(map, territory_name):
 
     return applicable
 
-def _get_occupations(map, command_map, commands, resolutions):
+def _get_occupations(game_map, commands, resolutions):
     occupations = set()
     for command in commands:
         if isinstance(command, MoveCommand) or isinstance(command, ConvoyMoveCommand):
             if resolutions[command.unit.position]:
-                occupations |= _applicable_territories(map, command.destination)
+                occupations |= _applicable_territories(game_map, command.destination)
             else:
-                occupations |= _applicable_territories(map, command.unit.position)
+                occupations |= _applicable_territories(game_map, command.unit.position)
         else:
-            occupations |= _applicable_territories(map, command.unit.position)
+            occupations |= _applicable_territories(game_map, command.unit.position)
 
     return occupations
 

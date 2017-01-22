@@ -5,18 +5,18 @@ from pydip.test.command_helper import RetreatCommandType
 from pydip.turn.retreat import resolve_retreats
 
 
-class RetreatHelper():
-    def __init__(self, retreat_map, player_helpers, map=vanilla_dip.generate_map()):
-        self.map = map
+class RetreatHelper:
+    def __init__(self, retreat_map, player_helpers, game_map=vanilla_dip.generate_map()):
+        self.game_map = game_map
         self.retreat_map = retreat_map
         self.players = {
-            player_helper.name : Player(player_helper.name, map, player_helper.get_starting_configuration())
+            player_helper.name : Player(player_helper.name, game_map, player_helper.get_starting_configuration())
             for player_helper in player_helpers
         }
         self.commands = self._build_commands(player_helpers)
 
     def resolve(self):
-        return resolve_retreats(self.map, self.retreat_map, self.commands)
+        return resolve_retreats(self.retreat_map, self.commands)
 
     def _build_commands(self, player_helpers):
         commands = []
@@ -28,11 +28,11 @@ class RetreatHelper():
 
     def _build_command(self, player, command):
         unit = self._find_unit(command.unit)
-        if command.type == RetreatCommandType.MOVE:
+        if command.command_type == RetreatCommandType.MOVE:
             return RetreatMoveCommand(self.retreat_map, player, unit, command.destination)
-        if command.type == RetreatCommandType.DISBAND:
+        if command.command_type == RetreatCommandType.DISBAND:
             return RetreatDisbandCommand(self.retreat_map, player, unit)
-        raise ValueError("Invalid command type: {}".format(command.type))
+        raise ValueError("Invalid command type: {}".format(command.command_type))
 
     def _find_unit(self, territory):
         for player in self.players.values():

@@ -1,8 +1,13 @@
 .idea/*
 **/test/**/.cache/*
 **/__pycache__/**
+.cache/**
 
 # packaging artifacts
 MANIFEST
 dist/**
 pydip.egg-info/**
+
+# venv setup
+venv/**
+requirements.txt
