@@ -2,6 +2,7 @@
 **/test/**/.cache/*
 **/__pycache__/**
 
-# PyPI artifacts
+# packaging artifacts
 MANIFEST
 dist/**
+pydip.egg-info/**
