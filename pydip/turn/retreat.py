@@ -1,7 +1,5 @@
-from collections import defaultdict
-
-from player.command.retreat_command import RetreatCommand, RetreatMoveCommand
-from player.unit import Unit
+from pydip.player.command.retreat_command import RetreatCommand, RetreatMoveCommand
+from pydip.player.unit import Unit
 
 """
 Returns resulting board state by considering interactions of provided list

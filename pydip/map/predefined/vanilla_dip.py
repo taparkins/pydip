@@ -1,8 +1,8 @@
 from copy import deepcopy
 
-from map.map import Map, SupplyCenterMap, OwnershipMap
-from player.unit import Unit
-from player.unit import UnitTypes
+from pydip.map.map import Map, SupplyCenterMap, OwnershipMap
+from pydip.player.unit import Unit
+from pydip.player.unit import UnitTypes
 
 _VANILLA_DIP_MAP_CACHE = None
 def generate_map():

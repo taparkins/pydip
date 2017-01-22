@@ -1,7 +1,7 @@
-from player.unit import Unit, UnitTypes
-from test.command_helper import CommandType, CommandHelper
-from test.player_helper import PlayerHelper
-from test.turn_helper import TurnHelper
+from pydip.player.unit import Unit, UnitTypes
+from pydip.test.command_helper import CommandType, CommandHelper
+from pydip.test.player_helper import PlayerHelper
+from pydip.test.turn_helper import TurnHelper
 
 
 def test_g_1__two_units_can_swap_places_by_convoy():

@@ -1,8 +1,8 @@
-from map.predefined import vanilla_dip
-from player.command.retreat_command import RetreatMoveCommand, RetreatDisbandCommand
-from player.player import Player
-from test.command_helper import RetreatCommandType
-from turn.retreat import resolve_retreats
+from pydip.map.predefined import vanilla_dip
+from pydip.player.command.retreat_command import RetreatMoveCommand, RetreatDisbandCommand
+from pydip.player.player import Player
+from pydip.test.command_helper import RetreatCommandType
+from pydip.turn.retreat import resolve_retreats
 
 
 class RetreatHelper():

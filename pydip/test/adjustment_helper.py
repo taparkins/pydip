@@ -1,10 +1,10 @@
-from map.map import OwnershipMap
-from map.predefined import vanilla_dip
-from player.command.adjustment_command import AdjustmentCreateCommand, AdjustmentDisbandCommand
-from player.player import Player
-from player.unit import Unit
-from test.command_helper import AdjustmentCommandType
-from turn.adjustment import calculate_adjustments, resolve_adjustment, resolve_adjustment__validated
+from pydip.map.map import OwnershipMap
+from pydip.map.predefined import vanilla_dip
+from pydip.player.command.adjustment_command import AdjustmentCreateCommand, AdjustmentDisbandCommand
+from pydip.player.player import Player
+from pydip.player.unit import Unit
+from pydip.test.command_helper import AdjustmentCommandType
+from pydip.turn.adjustment import calculate_adjustments, resolve_adjustment, resolve_adjustment__validated
 
 
 class AdjustmentHelper():

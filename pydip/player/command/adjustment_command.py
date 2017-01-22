@@ -1,4 +1,4 @@
-from player.helpers import unit_type_can_enter
+from pydip.player.helpers import unit_type_can_enter
 
 
 class AdjustmentCommand:

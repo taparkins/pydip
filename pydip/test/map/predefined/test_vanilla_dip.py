@@ -1,4 +1,4 @@
-from map.predefined.vanilla_dip import generate_map, generate_supply_center_map
+from pydip.map.predefined.vanilla_dip import generate_map, generate_supply_center_map
 
 def test_territory_adjacency_counts():
     map = generate_map()

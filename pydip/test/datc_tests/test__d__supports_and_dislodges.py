@@ -1,12 +1,12 @@
 import pytest
 
-from map.predefined.vanilla_dip import generate_map
-from player.command.command import SupportCommand
-from player.player import Player
-from player.unit import Unit, UnitTypes
-from test.command_helper import CommandType, CommandHelper
-from test.player_helper import PlayerHelper
-from test.turn_helper import TurnHelper
+from pydip.map.predefined.vanilla_dip import generate_map
+from pydip.player.command.command import SupportCommand
+from pydip.player.player import Player
+from pydip.player.unit import Unit, UnitTypes
+from pydip.test.command_helper import CommandType, CommandHelper
+from pydip.test.player_helper import PlayerHelper
+from pydip.test.turn_helper import TurnHelper
 
 
 def test_d_1__supported_hold_can_prevent_dislodgement():

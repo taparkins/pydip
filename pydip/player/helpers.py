@@ -1,5 +1,5 @@
-from map.territory import CoastTerritory, SeaTerritory, LandTerritory
-from player.unit import UnitTypes
+from pydip.map.territory import CoastTerritory, SeaTerritory, LandTerritory
+from pydip.player.unit import UnitTypes
 
 def unit_can_enter(map, unit, territory):
     if territory.name not in map.adjacency[unit.position]:

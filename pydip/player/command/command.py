@@ -1,5 +1,5 @@
-from map.territory import SeaTerritory
-from player.helpers import (
+from pydip.map.territory import SeaTerritory
+from pydip.player.helpers import (
     unit_can_enter,
     unit_can_support,
     territory_is_convoy_compatible,

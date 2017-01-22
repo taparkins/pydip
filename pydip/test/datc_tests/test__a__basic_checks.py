@@ -1,16 +1,16 @@
 import pytest
 
-from map.predefined.vanilla_dip import generate_map
-from player.command.command import (
+from pydip.map.predefined.vanilla_dip import generate_map
+from pydip.player.command.command import (
     ConvoyMoveCommand,
     ConvoyTransportCommand,
     HoldCommand,
     MoveCommand,
     SupportCommand,
 )
-from player.player import Player
-from player.unit import UnitTypes, Unit
-from turn.resolve import resolve_turn
+from pydip.player.player import Player
+from pydip.player.unit import UnitTypes, Unit
+from pydip.turn.resolve import resolve_turn
 
 
 def test_a_1__check_move_to_non_neighboring_territory_fails():

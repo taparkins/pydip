@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-from map.map import OwnershipMap
-from player.command.adjustment_command import AdjustmentCommand, AdjustmentCreateCommand, AdjustmentDisbandCommand
+from pydip.map.map import OwnershipMap
+from pydip.player.command.adjustment_command import AdjustmentCommand, AdjustmentCreateCommand, AdjustmentDisbandCommand
 
 """
 Given a map of current ownership, and a map of new unit positions (after

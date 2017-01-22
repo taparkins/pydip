@@ -1,6 +1,6 @@
-from player.unit import Unit
-from player.helpers import unit_type_can_enter
-from map.territory import CoastTerritory
+from pydip.player.unit import Unit
+from pydip.player.helpers import unit_type_can_enter
+from pydip.map.territory import CoastTerritory
 
 class Player:
     """ String -- name identifier for player """

@@ -2,10 +2,10 @@ from collections import defaultdict
 from enum import Enum
 from functools import reduce
 
-from map.territory import CoastTerritory, SeaTerritory, LandTerritory
-from player.command.command import MoveCommand, ConvoyMoveCommand, ConvoyTransportCommand, SupportCommand
-from player.unit import Unit
-from turn.command_map import CommandMap
+from pydip.map.territory import CoastTerritory, SeaTerritory, LandTerritory
+from pydip.player.command.command import MoveCommand, ConvoyMoveCommand, ConvoyTransportCommand, SupportCommand
+from pydip.player.unit import Unit
+from pydip.turn.command_map import CommandMap
 
 """
 Returns resulting positions of each unit by considering interactions

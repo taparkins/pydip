@@ -1,8 +1,8 @@
 import pytest
 
-from player.unit import UnitTypes, Unit
-from player.player import Player
-from map.predefined.vanilla_dip import generate_map
+from pydip.player.unit import UnitTypes, Unit
+from pydip.player.player import Player
+from pydip.map.predefined.vanilla_dip import generate_map
 
 def test_player_with_no_starting_position():
     map = generate_map()

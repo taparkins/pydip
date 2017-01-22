@@ -1,8 +1,8 @@
-from map.predefined.vanilla_dip import generate_map
-from player.command.command import SupportCommand, MoveCommand, HoldCommand, ConvoyMoveCommand, ConvoyTransportCommand
-from player.player import Player
-from player.unit import UnitTypes
-from turn.command_map import CommandMap
+from pydip.map.predefined.vanilla_dip import generate_map
+from pydip.player.command.command import SupportCommand, MoveCommand, HoldCommand, ConvoyMoveCommand, ConvoyTransportCommand
+from pydip.player.player import Player
+from pydip.player.unit import UnitTypes
+from pydip.turn.command_map import CommandMap
 
 
 def test__move_command():

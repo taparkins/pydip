@@ -1,4 +1,4 @@
-from player.unit import UnitTypes, Unit
+from pydip.player.unit import UnitTypes, Unit
 
 def test_same_position_and_type_are_equal():
     unit_a = Unit(UnitTypes.FLEET, 'Adriatic Sea')

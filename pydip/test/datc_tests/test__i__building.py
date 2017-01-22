@@ -1,11 +1,11 @@
 import pytest
 
-from map.predefined import vanilla_dip
-from player.unit import Unit
-from player.unit import UnitTypes
-from test.adjustment_helper import AdjustmentHelper
-from test.command_helper import AdjustmentCommandHelper, AdjustmentCommandType
-from test.player_helper import PlayerHelper
+from pydip.map.predefined import vanilla_dip
+from pydip.player.unit import Unit
+from pydip.player.unit import UnitTypes
+from pydip.test.adjustment_helper import AdjustmentHelper
+from pydip.test.command_helper import AdjustmentCommandHelper, AdjustmentCommandType
+from pydip.test.player_helper import PlayerHelper
 
 
 def test_i_1a__too_many_build_orders__with_validation():

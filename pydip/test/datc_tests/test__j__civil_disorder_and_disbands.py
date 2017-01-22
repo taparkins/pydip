@@ -2,11 +2,11 @@ from copy import deepcopy
 
 import pytest
 
-from map.predefined import vanilla_dip
-from player.unit import UnitTypes, Unit
-from test.adjustment_helper import AdjustmentHelper
-from test.command_helper import AdjustmentCommandHelper, AdjustmentCommandType
-from test.player_helper import PlayerHelper
+from pydip.map.predefined import vanilla_dip
+from pydip.player.unit import UnitTypes, Unit
+from pydip.test.adjustment_helper import AdjustmentHelper
+from pydip.test.command_helper import AdjustmentCommandHelper, AdjustmentCommandType
+from pydip.test.player_helper import PlayerHelper
 
 
 def test_j_1a__too_many_remove_orders__validated():

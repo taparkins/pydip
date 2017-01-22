@@ -1,9 +1,9 @@
 import pytest
 
-from player.unit import Unit, UnitTypes
-from test.command_helper import RetreatCommandHelper, RetreatCommandType, CommandHelper, CommandType
-from test.player_helper import PlayerHelper
-from test.retreat_helper import RetreatHelper
+from pydip.player.unit import Unit, UnitTypes
+from pydip.test.command_helper import RetreatCommandHelper, RetreatCommandType, CommandHelper, CommandType
+from pydip.test.player_helper import PlayerHelper
+from pydip.test.retreat_helper import RetreatHelper
 
 
 # Tests H.1-H.3 have been skipped, because they deal with players

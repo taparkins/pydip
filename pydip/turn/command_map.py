@@ -1,7 +1,6 @@
 from collections import defaultdict
 
-from map.territory import CoastTerritory
-from player.command.command import MoveCommand, ConvoyMoveCommand, ConvoyTransportCommand, SupportCommand
+from pydip.player.command.command import MoveCommand, ConvoyMoveCommand, ConvoyTransportCommand, SupportCommand
 
 
 class CommandMap:

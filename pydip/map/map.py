@@ -1,4 +1,4 @@
-from map.territory import LandTerritory, SeaTerritory, CoastTerritory
+from pydip.map.territory import LandTerritory, SeaTerritory, CoastTerritory
 
 
 class Map:

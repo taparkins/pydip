@@ -1,10 +1,8 @@
-import pytest
-
-from map.predefined.vanilla_dip import generate_map
-from player.command.command import MoveCommand, SupportCommand, HoldCommand, ConvoyMoveCommand, ConvoyTransportCommand
-from player.player import Player
-from player.unit import Unit, UnitTypes
-from turn.resolve import resolve_turn
+from pydip.map.predefined.vanilla_dip import generate_map
+from pydip.player.command.command import MoveCommand, SupportCommand, ConvoyMoveCommand, ConvoyTransportCommand
+from pydip.player.player import Player
+from pydip.player.unit import Unit, UnitTypes
+from pydip.turn.resolve import resolve_turn
 
 
 def test_c_1__three_army_circular_movement():

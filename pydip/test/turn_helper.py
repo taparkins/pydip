@@ -1,8 +1,8 @@
-from map.predefined import vanilla_dip
-from player.command.command import MoveCommand, SupportCommand, ConvoyMoveCommand, ConvoyTransportCommand, HoldCommand
-from player.player import Player
-from test.command_helper import CommandType
-from turn.resolve import resolve_turn
+from pydip.map.predefined import vanilla_dip
+from pydip.player.command.command import MoveCommand, SupportCommand, ConvoyMoveCommand, ConvoyTransportCommand, HoldCommand
+from pydip.player.player import Player
+from pydip.test.command_helper import CommandType
+from pydip.turn.resolve import resolve_turn
 
 
 class TurnHelper():

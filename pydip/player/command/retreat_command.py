@@ -1,4 +1,4 @@
-from player.command.command import Command
+from pydip.player.command.command import Command
 
 
 class RetreatCommand(Command):

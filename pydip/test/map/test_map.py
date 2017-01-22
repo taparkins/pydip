@@ -1,6 +1,5 @@
-from map.territory import SeaTerritory, LandTerritory
-
-from map.map import Map
+from pydip.map.territory import SeaTerritory, LandTerritory
+from pydip.map.map import Map
 
 
 def test_empty_map():
