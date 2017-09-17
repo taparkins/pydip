@@ -81,7 +81,7 @@ def resolve_adjustment__validated(ownership_map, adjustment_counts, player_units
     each player after adjustments have been resolved.
     """
     _validate_adjustments(ownership_map, adjustment_counts, commands)
-    resolve_adjustment(ownership_map, adjustment_counts, player_units, commands)
+    return resolve_adjustment(ownership_map, adjustment_counts, player_units, commands)
 
 
 def resolve_adjustment(ownership_map, adjustment_counts, player_units, commands):

@@ -3,7 +3,7 @@ from setuptools import find_packages
 setup(
     name = 'pydip',
     packages = find_packages(exclude=['pydip.test', 'pydip.test.*']),
-    version = '0.1.7',
+    version = '0.1.8',
     description = 'Adjudication logic engine for Diplomacy board game',
     author = 'Aric Parkinson',
     author_email = 'aric.parkinson@gmail.com',
