@@ -94,7 +94,6 @@ class OwnershipMap:
     home_territories = None
 
     def __init__(self, supply_map, owned_territories, home_territories):
-        assert owned_territories.keys() == home_territories.keys()
         players = owned_territories.keys()
         assert all(owned_territories[player] - supply_map.supply_centers == set() for player in players)
         assert all(home_territories[player] - supply_map.supply_centers == set() for player in players)
