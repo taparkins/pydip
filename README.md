@@ -10,7 +10,3 @@ Adjudicator Test Cases (DATC) site
 (http://web.inter.nl.net/users/L.B.Kruijswijk/), with the exception that
 this engine does not permit ambiguous orders, and Civil Disobedience
 procedures are currently simplified.
-
-------
-
-TODO: detailed README info
