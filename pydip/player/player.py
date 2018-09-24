@@ -49,3 +49,9 @@ class Player:
             self.units.append(Unit(unit_type, name))
 
         assert len(self.starting_territories) == len(starting_configuration)
+
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return '{}: {}\n  Units: {}'.format(self.name, self.starting_territories, self.units)
