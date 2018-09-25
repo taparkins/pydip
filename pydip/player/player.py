@@ -25,7 +25,7 @@ class Player:
         - Coasts should be provided as starting territories for fleets, but the parent will be labeled as the actual
           starting territory.
     """
-    def __init__(self, name, game_map, starting_configuration):
+    def __init__(self, name, game_map, starting_configuration=[]):
         self.name = name
         self.game_map = game_map
         self.starting_territories = set()
@@ -55,3 +55,6 @@ class Player:
 
     def __str__(self):
         return '{}: {}\n  Units: {}'.format(self.name, self.starting_territories, self.units)
+
+    def find_unit(self, territory):
+        return next(unit for unit in self.units if unit.position == territory)

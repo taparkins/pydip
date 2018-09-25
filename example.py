@@ -2,13 +2,12 @@
 from pprint import pprint
 
 from pydip.map.predefined import vanilla_dip
-from pydip.player import Player
-from pydip.player import command
+from pydip.player import Player, command
 from pydip.turn import resolve_turn, resolve_retreats, resolve_adjustment
 
 # The test module contains some convenient helpers (not used in this examples,
 # in order to better demonstrate how PyDip works)
-from pydip.test import CommandType, CommandHelper, PlayerHelper, TurnHelper
+from pydip.test import CommandHelper, PlayerHelper, TurnHelper, CommandType
 
 
 # PyDip provides a predefined map of vanilla Diplomacy
@@ -29,35 +28,48 @@ for name, units in vanilla_dip.generate_starting_player_units().items():
 
 
 # players can issue commands
-france = players['France']
-units = sorted(france.units)
-cmd = command.MoveCommand(france, units[0], 'Mid-Atlantic Ocean')
+england = players['England']
+unit = england.find_unit('Liverpool')
+cmd = command.MoveCommand(england, unit, 'Wales')
 print('\nCommands\n========\n{}'.format(cmd))
 # illegal commands result in an error
 try:
-    command.MoveCommand(france, units[0], 'Marseilles')
+    command.MoveCommand(england, unit, 'York')
 except AssertionError:
-    print('Illegal command')
+    print('Illegal command\n')
 
 
 # PyDip can resolve a set of commands
 # the pydip test package provides some helpers
-commands = []
-for name, destinations in dict(
-        England=['Norwegian Sea', 'Wales', 'North Sea'],
-        France=['Mid-Atlantic Ocean', 'Burgundy', 'Picardy'],
-        Germany=['Prussia', 'Holland Coast', 'Burgundy'],
-        Italy=['Ionian Sea', 'Naples', 'Tyrolia'],
-        Russia=['Livonia', 'Black Sea', 'Livonia Coast', 'Ukraine'],
-        Austria=['Serbia', 'Albania Coast', 'Tyrolia'],
-        Turkey=['Black Sea', 'Bulgaria', 'Constantinople'],
+commands = [cmd]
+for name, moves in dict(
+        England=[('Edinburgh Coast', 'Norwegian Sea'),
+                 ('Liverpool', 'Wales'),
+                 ('London Coast', 'North Sea')],
+        France=[('Brest Coast', 'Mid-Atlantic Ocean'),
+                ('Marseilles', 'Burgundy'),
+                ('Paris', 'Picardy')],
+        Germany=[('Berlin', 'Prussia'),
+                 ('Kiel Coast', 'Holland Coast'),
+                 ('Munich', 'Burgundy')],
+        Italy=[('Naples Coast', 'Ionian Sea'),
+               ('Rome', 'Naples'),
+               ('Venice', 'Tyrolia')],
+        Russia=[('Moscow', 'Livonia'),
+                ('Sevastopol Coast', 'Black Sea'),
+                ('St. Petersburg South Coast', 'Livonia Coast'),
+                ('Warsaw', 'Ukraine')],
+        Austria=[('Budapest', 'Serbia'),
+                 ('Trieste Coast', 'Albania Coast'),
+                 ('Vienna', 'Tyrolia')],
+        Turkey=[('Ankara Coast', 'Black Sea'),
+                ('Constantinople', 'Bulgaria'),
+                ('Smyrna', 'Constantinople')],
 ).items():
     player = players[name]
-    # player units are a set, so their order is not guaranteed
-    # (so we sort them)
-    units = sorted(player.units)
-    for i, dest in enumerate(destinations):
-        cmd = command.MoveCommand(player, units[i], dest)
+    for position, dest in moves:
+        unit = player.find_unit(position)
+        cmd = command.MoveCommand(player, unit, dest)
         print(cmd)
         commands.append(cmd)
 
