@@ -5,6 +5,9 @@ class UnitTypes(Enum):
     TROOP = 0
     FLEET = 1
 
+    def __str__(self):
+        return self.name
+
 
 class Unit:
     """ UnitType """

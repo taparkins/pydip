@@ -31,6 +31,12 @@ class Map:
         self._setup_name_map(territory_descriptors)
         self._setup_adjacencies(adjacencies)
 
+    def __str__(self):
+        territories = []
+        for name, territory in self.name_map.items():
+            territories.append(('{}: {}'.format(territory, self.adjacency[name])))
+        return '\n'.join(territories)
+
     def relevant_name_for_territory(self, territory_name):
         territory = self.name_map[territory_name]
         if isinstance(territory, CoastTerritory):
@@ -82,6 +88,9 @@ class SupplyCenterMap:
         self.supply_centers = set(supply_centers)
         self.game_map = game_map
 
+    def __str__(self):
+        return 'Adjacencies:\n------------\n{}\n\nSCs:\n----\n{}'.format(self.game_map, self.supply_centers)
+
 
 class OwnershipMap:
     """ SupplyCenterMap """
@@ -101,6 +110,12 @@ class OwnershipMap:
         self.supply_map = supply_map
         self.owned_territories = owned_territories
         self.home_territories = home_territories
+
+    def __str__(self):
+        lines = ['{}\n'.format(self.supply_map), 'Supply centers\n--------------']
+        for player, territories in self.owned_territories.items():
+            lines.append('{}:\n  Owned: {}\n  Home: {}'.format(player, territories, self.home_territories[player]))
+        return '\n'.join(lines)
 
     def territory_is_owned(self, player, territory_name):
         relevant_name = self.supply_map.game_map.relevant_name_for_territory(territory_name)
