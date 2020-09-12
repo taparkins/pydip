@@ -456,12 +456,17 @@ def test_g_13__support_cut_on_attack_on_itself_via_convoy():
     result = helper.resolve()
     assert result == {
         'Austria': {
-            Unit(UnitTypes.TROOP, 'Trieste'): None,
+            Unit(UnitTypes.TROOP, 'Trieste'): {
+                'Serbia',
+                'Budapest',
+                'Vienna',
+                'Tyrolia',
+            },
             Unit(UnitTypes.FLEET, 'Adriatic Sea'): None,
         },
         'Italy': {
             Unit(UnitTypes.TROOP, 'Venice'): None,
-            Unit(UnitTypes.FLEET, 'Albania Coast'): None,
+            Unit(UnitTypes.FLEET, 'Trieste Coast'): None,
         },
     }
 

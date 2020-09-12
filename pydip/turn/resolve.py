@@ -265,9 +265,7 @@ def _get_head_to_head_combatant(game_map, command_map, command):
     potential_attacker = command_map.get_home_command(command.destination)
     if potential_attacker is not None:
         if isinstance(potential_attacker, MoveCommand):
-            attacked_territory = game_map.name_map[potential_attacker.destination]
-            position_territory = game_map.name_map[command.unit.position]
-            if position_territory.same_territory(attacked_territory):
+            if _same_territory_by_name(game_map, command.unit.position, potential_attacker.destination):
                 return potential_attacker
     return None
 
@@ -329,33 +327,33 @@ def _hold_strength(game_map, command_map, territory):
 #----------------------
 def _adjudicate_support(game_map, command_map, command):
     assert isinstance(command, SupportCommand)
-    if _invalid_support(command_map, command):
+    if _invalid_support(game_map, command_map, command):
         return False
-    if len(_indirect_non_convoy_attackers(command_map, command)) > 0:
+    if len(_indirect_non_convoy_attackers(game_map, command_map, command)) > 0:
         return False
-    for convoy_attacker in _indirect_convoy_attackers(command_map, command):
+    for convoy_attacker in _indirect_convoy_attackers(game_map, command_map, command):
         if _has_path(game_map, command_map, convoy_attacker):
             return False
     return not _is_dislodged(game_map, command_map, command.unit)
 
 
-def _invalid_support(command_map, command):
+def _invalid_support(game_map, command_map, command):
     supported_command = command_map.get_home_command(command.supported_unit.position)
     if isinstance(supported_command, MoveCommand) or isinstance(supported_command, ConvoyMoveCommand):
-        return supported_command.destination != command.destination
-    return command.destination != command.supported_unit.position
+        return not _same_territory_by_name(game_map, supported_command.destination, command.destination)
+    return not _same_territory_by_name(game_map, command.destination, command.supported_unit.position)
 
 
-def _indirect_non_convoy_attackers(command_map, command):
+def _indirect_non_convoy_attackers(game_map, command_map, command):
     filtered = command_map.get_attackers(command.unit.position)
-    filtered = filter(lambda c: c.unit.position != command.destination, filtered)
+    filtered = filter(lambda c: not _same_territory_by_name(game_map, c.unit.position, command.destination), filtered)
     filtered = filter(lambda c: c.player != command.player, filtered)
     return list(filtered)
 
 
-def _indirect_convoy_attackers(command_map, command):
+def _indirect_convoy_attackers(game_map, command_map, command):
     filtered = command_map.get_convoy_attackers(command.unit.position)
-    filtered = filter(lambda c: c.unit.position != command.destination, filtered)
+    filtered = filter(lambda c: not _same_territory_by_name(game_map, c.unit.position, command.destination), filtered)
     filtered = filter(lambda c: c.player.name != command.player.name, filtered)
     return list(filtered)
 
@@ -375,12 +373,16 @@ def _attackers(game_map, command_map, unit):
         filtered,
     )
     filtered = filter(
-        lambda c: game_map.name_map[c.destination].same_territory(game_map.name_map[unit.position]),
+        lambda c: _same_territory_by_name(game_map, c.destination, unit.position),
         filtered,
     )
 
     return list(filtered)
 
+def _same_territory_by_name(game_map, territory_name_1, territory_name_2):
+    territory_1 = game_map.name_map[territory_name_1]
+    territory_2 = game_map.name_map[territory_name_2]
+    return territory_1.same_territory(territory_2)
 
 #----------------------
 # Retreats
